@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kore — Estrategia de Lanzamiento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#080808;
+  --off:#101010;
+  --dark:#181816;
+  --mid:#2a2a28;
+  --ti:#888884;
+  --ti-l:#b0ada8;
+  --white:#f4f1eb;
+  --amber:#c8a96e;
+  --amber-d:#9a7d4a;
+  --green:#4a9a6a;
+  --red:#b03020;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --mono:'DM Mono',monospace;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--mono);font-weight:300;cursor:none;overflow-x:hidden}
+
+#cur{position:fixed;width:6px;height:6px;background:var(--white);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+#cur2{position:fixed;width:28px;height:28px;border:1px solid rgba(244,241,235,.18);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(20px);background:rgba(8,8,8,.8);border-bottom:1px solid rgba(255,255,255,.05)}
+.n-logo{font-family:var(--serif);font-size:20px;font-weight:300;letter-spacing:.3em;color:var(--white);text-decoration:none}
+.n-title{font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--ti)}
+.n-date{font-size:9px;letter-spacing:.25em;color:var(--amber)}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 48px 80px;position:relative;overflow:hidden}
+.h-glow{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(200,169,110,.06),transparent 65%);pointer-events:none}
+.h-label{font-size:9px;letter-spacing:.55em;text-transform:uppercase;color:var(--amber);margin-bottom:24px;animation:fu 1s var(--ease) .2s both}
+.h-title{font-family:var(--serif);font-size:clamp(56px,8vw,120px);font-weight:300;letter-spacing:.1em;line-height:1;color:var(--white);animation:fu 1s var(--ease) .4s both;margin-bottom:20px}
+.h-sub{font-family:var(--serif);font-size:clamp(16px,2vw,22px);font-style:italic;font-weight:300;color:var(--ti-l);animation:fu 1s var(--ease) .6s both;margin-bottom:64px;letter-spacing:.04em}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:2px;width:100%;max-width:900px;animation:fu 1s var(--ease) .8s both}
+.stat-box{flex:1;background:var(--off);padding:28px;border-top:2px solid var(--amber);text-align:center}
+.stat-val{font-family:var(--serif);font-size:clamp(28px,4vw,48px);font-weight:300;color:var(--white);line-height:1}
+.stat-lbl{font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:var(--ti);margin-top:8px}
+
+/* SCROLL NAV */
+.scroll-nav{position:fixed;right:32px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;z-index:50}
+.sn-dot{width:6px;height:6px;border-radius:50%;background:rgba(244,241,235,.15);cursor:none;transition:.3s;position:relative}
+.sn-dot.active{background:var(--amber);width:24px;border-radius:3px}
+.sn-dot:hover{background:var(--ti)}
+.sn-tooltip{position:absolute;right:18px;top:50%;transform:translateY(-50%);background:var(--dark);color:var(--white);font-size:9px;letter-spacing:.2em;padding:4px 10px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s}
+.sn-dot:hover .sn-tooltip{opacity:1}
+
+/* SECTIONS */
+section{padding:120px 48px;position:relative}
+.s-label{font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:var(--amber);margin-bottom:48px;display:flex;align-items:center;gap:16px}
+.s-label::after{content:'';flex:0 0 32px;height:1px;background:rgba(200,169,110,.3)}
+.s-title{font-family:var(--serif);font-size:clamp(36px,5vw,64px);font-weight:300;letter-spacing:.05em;color:var(--white);line-height:1.1;margin-bottom:16px}
+.s-sub{font-size:11px;letter-spacing:.15em;color:var(--ti);line-height:1.9;max-width:600px}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.rv-d1{transition-delay:.1s}.rv-d2{transition-delay:.22s}.rv-d3{transition-delay:.35s}.rv-d4{transition-delay:.5s}
+
+/* ══ HOY — ACCIONES INMEDIATAS ══ */
+#hoy{background:var(--black)}
+.hoy-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;margin-top:56px}
+.hoy-card{background:var(--off);padding:40px;position:relative;overflow:hidden;transition:background .3s}
+.hoy-card:hover{background:var(--dark)}
+.hoy-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
+.hoy-card:hover::before{transform:scaleX(1)}
+.hc-priority{display:inline-flex;align-items:center;gap:8px;font-size:8px;letter-spacing:.35em;text-transform:uppercase;margin-bottom:20px;padding:4px 12px;border:1px solid}
+.priority-now{color:var(--amber);border-color:rgba(200,169,110,.3)}
+.priority-week{color:var(--ti-l);border-color:rgba(176,173,168,.2)}
+.hc-title{font-family:var(--serif);font-size:24px;font-weight:300;color:var(--white);margin-bottom:12px;line-height:1.2}
+.hc-text{font-size:10px;letter-spacing:.12em;color:var(--ti);line-height:2}
+.hc-action{margin-top:24px;display:flex;flex-direction:column;gap:8px}
+.hc-step{display:flex;align-items:flex-start;gap:12px;font-size:10px;letter-spacing:.12em;color:var(--ti-l);line-height:1.7}
+.hc-step-num{color:var(--amber);flex-shrink:0;font-size:9px;letter-spacing:.2em;margin-top:1px}
+.hc-check{width:18px;height:18px;border:1px solid rgba(200,169,110,.3);border-radius:2px;flex-shrink:0;cursor:none;display:flex;align-items:center;justify-content:center;transition:.2s;margin-top:1px}
+.hc-check:hover{border-color:var(--amber);background:rgba(200,169,110,.1)}
+.hc-check.done{background:var(--amber);border-color:var(--amber)}
+.hc-check.done::after{content:'✓';font-size:10px;color:var(--black)}
+
+/* ══ TIMELINE 6 MESES ══ */
+#timeline{background:var(--off)}
+.tl-months{display:flex;gap:2px;margin-top:56px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.tl-months::-webkit-scrollbar{display:none}
+.tl-month{flex:0 0 280px;background:var(--dark);padding:32px;position:relative;cursor:none;transition:background .3s,transform .3s}
+.tl-month:hover{background:var(--mid);transform:translateY(-4px)}
+.tl-month.current{border-top:2px solid var(--amber)}
+.tl-month.current .tm-num{color:var(--amber)}
+.tm-num{font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--ti);margin-bottom:16px;display:block}
+.tm-title{font-family:var(--serif);font-size:22px;font-weight:300;color:var(--white);margin-bottom:20px;line-height:1.2}
+.tm-items{display:flex;flex-direction:column;gap:10px}
+.tm-item{display:flex;gap:10px;align-items:flex-start}
+.tm-bullet{width:5px;height:5px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:5px}
+.tm-text{font-size:10px;letter-spacing:.1em;color:var(--ti);line-height:1.8}
+.tm-kpi{margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
+.tm-kpi-val{font-family:var(--serif);font-size:24px;font-weight:300;color:var(--white)}
+.tm-kpi-label{font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:var(--ti);text-align:right}
+
+/* ══ CANALES ══ */
+#canales{background:var(--black)}
+.canales-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:56px}
+.canal{background:var(--off);padding:40px;position:relative;overflow:hidden}
+.canal::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--amber),transparent);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+.canal:hover::after{transform:scaleX(1)}
+.ca-icon{font-size:28px;margin-bottom:20px;display:block}
+.ca-title{font-family:var(--serif);font-size:22px;font-weight:300;color:var(--white);margin-bottom:12px}
+.ca-text{font-size:10px;letter-spacing:.12em;color:var(--ti);line-height:2;margin-bottom:20px}
+.ca-tactics{display:flex;flex-direction:column;gap:6px}
+.ca-tactic{font-size:9px;letter-spacing:.15em;color:var(--ti-l);display:flex;gap:8px;align-items:flex-start;line-height:1.7}
+.ca-tactic::before{content:'→';color:var(--amber);flex-shrink:0}
+.ca-metric{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);font-size:9px;letter-spacing:.2em;color:var(--amber)}
+
+/* ══ CONTENIDO SEMANA A SEMANA ══ */
+#contenido{background:var(--off)}
+.content-cal{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:56px}
+.cc-week{background:var(--dark);padding:28px}
+.cc-week-num{font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:var(--amber);margin-bottom:12px;display:block}
+.cc-week-title{font-family:var(--serif);font-size:18px;font-weight:300;color:var(--white);margin-bottom:16px}
+.cc-posts{display:flex;flex-direction:column;gap:8px}
+.cc-post{background:rgba(255,255,255,.03);border-radius:4px;padding:10px 12px;border-left:2px solid transparent}
+.cc-post.ig{border-left-color:#e4405f}
+.cc-post.tw{border-left-color:#1da1f2}
+.cc-post.yt{border-left-color:#ff0000}
+.cc-post.li{border-left-color:#0077b5}
+.cc-post.blog{border-left-color:var(--amber)}
+.cc-platform{font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:var(--ti);margin-bottom:3px}
+.cc-copy{font-size:9px;letter-spacing:.1em;color:var(--ti-l);line-height:1.6}
+
+/* ══ PRENSA ══ */
+#prensa{background:var(--black)}
+.press-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;margin-top:56px}
+.press-card{background:var(--off);padding:40px;position:relative}
+.press-card::before{content:'';position:absolute;top:0;left:0;width:40px;height:2px;background:var(--amber)}
+.pc-phase{font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:var(--amber);margin-bottom:16px;display:block}
+.pc-title{font-family:var(--serif);font-size:22px;font-weight:300;color:var(--white);margin-bottom:16px}
+.pc-text{font-size:10px;letter-spacing:.12em;color:var(--ti);line-height:2;margin-bottom:20px}
+.pc-targets{display:flex;flex-direction:column;gap:6px}
+.pc-target{font-size:9px;letter-spacing:.15em;color:var(--ti-l);display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.pc-target-name{color:var(--white)}
+.pc-target-type{color:var(--ti);font-size:8px;letter-spacing:.2em}
+
+/* ══ MÉTRICAS ══ */
+#metricas{background:var(--off)}
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:56px}
+.metric-card{background:var(--dark);padding:40px;position:relative;overflow:hidden}
+.mc-phase{font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:var(--ti);margin-bottom:20px;display:block}
+.mc-rows{display:flex;flex-direction:column;gap:0}
+.mc-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.mc-row:last-child{border-bottom:none}
+.mc-label{font-size:10px;letter-spacing:.12em;color:var(--ti)}
+.mc-target{font-family:var(--serif);font-size:20px;font-weight:300;color:var(--white)}
+.mc-bar-wrap{width:100%;height:2px;background:rgba(255,255,255,.08);margin-top:6px;overflow:hidden}
+.mc-bar{height:100%;background:var(--amber);width:0;transition:width 1.5s var(--ease)}
+
+/* ══ REGLAS DE ORO ══ */
+#reglas{background:var(--black);min-height:80vh;display:flex;align-items:center}
+.reglas-inner{max-width:800px;margin:0 auto;text-align:center}
+.reglas-list{display:flex;flex-direction:column;gap:2px;margin-top:56px;text-align:left}
+.regla{padding:32px 40px;background:var(--off);display:flex;gap:32px;align-items:flex-start;transition:background .3s}
+.regla:hover{background:var(--dark)}
+.regla-num{font-family:var(--serif);font-size:40px;font-weight:300;color:rgba(200,169,110,.2);flex-shrink:0;line-height:1}
+.regla-body{display:flex;flex-direction:column;gap:8px}
+.regla-title{font-family:var(--serif);font-size:22px;font-weight:300;color:var(--white)}
+.regla-text{font-size:10px;letter-spacing:.12em;color:var(--ti);line-height:2}
+
+/* FOOTER */
+footer{padding:40px 48px;border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;background:var(--black)}
+.ft-logo{font-family:var(--serif);font-size:17px;font-weight:300;letter-spacing:.3em;color:var(--ti)}
+.ft-copy{font-size:9px;letter-spacing:.2em;color:var(--ti);opacity:.3}
+
+@media(max-width:900px){
+  nav{padding:16px 20px}
+  section{padding:80px 20px}
+  .hoy-grid,.canales-grid,.press-grid,.metrics-grid{grid-template-columns:1fr}
+  .content-cal{grid-template-columns:repeat(2,1fr)}
+  .stats-row{flex-direction:column}
+  .scroll-nav{display:none}
+  footer{flex-direction:column;gap:16px;text-align:center}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="n-logo">Kore</a>
+  <span class="n-title">Estrategia de Lanzamiento</span>
+  <span class="n-date" id="nav-date">—</span>
+</nav>
+
+<!-- SCROLL NAV -->
+<div class="scroll-nav">
+  <div class="sn-dot active" onclick="goto('hero')"><span class="sn-tooltip">Inicio</span></div>
+  <div class="sn-dot" onclick="goto('hoy')"><span class="sn-tooltip">Hoy</span></div>
+  <div class="sn-dot" onclick="goto('timeline')"><span class="sn-tooltip">Timeline</span></div>
+  <div class="sn-dot" onclick="goto('canales')"><span class="sn-tooltip">Canales</span></div>
+  <div class="sn-dot" onclick="goto('contenido')"><span class="sn-tooltip">Contenido</span></div>
+  <div class="sn-dot" onclick="goto('prensa')"><span class="sn-tooltip">Prensa</span></div>
+  <div class="sn-dot" onclick="goto('metricas')"><span class="sn-tooltip">Métricas</span></div>
+  <div class="sn-dot" onclick="goto('reglas')"><span class="sn-tooltip">Reglas</span></div>
+</div>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="h-glow"></div>
+  <p class="h-label">Estrategia de lanzamiento global · 6 meses</p>
+  <h1 class="h-title">El plan.</h1>
+  <p class="h-sub">Lista de espera hoy. Lanzamiento global en 6 meses.<br>Todas las palancas activadas desde el primer día.</p>
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-val">Hoy</div><div class="stat-lbl">Lista de espera activa</div></div>
+    <div class="stat-box"><div class="stat-val">Mes 3</div><div class="stat-lbl">Prototipo público</div></div>
+    <div class="stat-box"><div class="stat-val">Mes 6</div><div class="stat-lbl">Lanzamiento global</div></div>
+    <div class="stat-box"><div class="stat-val">1.000</div><div class="stat-lbl">Unidades · Edición Fundadores</div></div>
+  </div>
+</section>
+
+<!-- ══ HOY ══ -->
+<section id="hoy">
+  <div class="s-label rv">01 — Acciones inmediatas</div>
+  <h2 class="s-title rv">Lo que pasa hoy.</h2>
+  <p class="s-sub rv">Antes de que termine el día, estas cosas tienen que estar hechas. Sin excusas.</p>
+  <div class="hoy-grid">
+
+    <div class="hoy-card rv">
+      <div class="hc-priority priority-now">⬤ Ahora mismo</div>
+      <h3 class="hc-title">Activar la lista de espera en getkore.es</h3>
+      <p class="hc-text">La web está lista. El manifiesto está listo. El dominio está registrado. Lo único que falta es conectar el formulario a un sistema de recogida de emails real y publicar.</p>
+      <div class="hc-action">
+        <div class="hc-step"><span class="hc-step-num">01</span><span>Conectar el formulario de la web a Mailchimp, Loops o Beehiiv — los tres son gratuitos para empezar</span></div>
+        <div class="hc-step"><span class="hc-step-num">02</span><span>Publicar getkore.es con la home y el manifiesto solamente. No esperar a tener todo perfecto.</span></div>
+        <div class="hc-step"><span class="hc-step-num">03</span><span>Enviar la URL a las 50 personas más cercanas del equipo con el mensaje: "Somos los primeros en saberlo."</span></div>
+      </div>
+    </div>
+
+    <div class="hoy-card rv rv-d1">
+      <div class="hc-priority priority-now">⬤ Ahora mismo</div>
+      <h3 class="hc-title">Crear las cuentas de redes sociales</h3>
+      <p class="hc-text">El nombre de usuario @kore tiene que ser el mismo en todas las plataformas. Si está cogido, @getkore o @kore.device. Registrar todo antes de que alguien más lo haga.</p>
+      <div class="hc-action">
+        <div class="hc-step"><span class="hc-step-num">01</span><span>Instagram — la plataforma más visual, donde vive el usuario Kore</span></div>
+        <div class="hc-step"><span class="hc-step-num">02</span><span>X/Twitter — donde vive la prensa tech y los early adopters</span></div>
+        <div class="hc-step"><span class="hc-step-num">03</span><span>LinkedIn — para la narrativa de empresa y atraer talento</span></div>
+        <div class="hc-step"><span class="hc-step-num">04</span><span>YouTube — el canal de video donde se documentará el proceso</span></div>
+      </div>
+    </div>
+
+    <div class="hoy-card rv rv-d2">
+      <div class="hc-priority priority-week">◯ Esta semana</div>
+      <h3 class="hc-title">El primer post. La declaración de existencia.</h3>
+      <p class="hc-text">No un anuncio de producto. No specs. Una sola imagen, una sola frase, un link al manifiesto. El objetivo es que la gente lo comparta porque resuena, no porque sea espectacular.</p>
+      <div class="hc-action">
+        <div class="hc-step"><span class="hc-step-num">01</span><span>Imagen: el logo Kore — el círculo solo — sobre negro. Sin texto encima.</span></div>
+        <div class="hc-step"><span class="hc-step-num">02</span><span>Caption: "El smartphone que es tuyo de verdad. Manifiesto en bio." Nada más.</span></div>
+        <div class="hc-step"><span class="hc-step-num">03</span><span>Publicar simultáneamente en todas las plataformas el mismo día a las 9:00</span></div>
+      </div>
+    </div>
+
+    <div class="hoy-card rv rv-d3">
+      <div class="hc-priority priority-week">◯ Esta semana</div>
+      <h3 class="hc-title">Email a 10 periodistas tech. Sin pitch. Solo el manifiesto.</h3>
+      <p class="hc-text">No una nota de prensa. Un email personal, de dos párrafos, que dice: "Estamos construyendo algo. Lee esto antes de que todo el mundo lo sepa." El manifiesto hace el trabajo.</p>
+      <div class="hc-action">
+        <div class="hc-step"><span class="hc-step-num">01</span><span>Identificar 10 periodistas de Xataka, The Verge, Wired, Ars Technica que cubren hardware y privacidad</span></div>
+        <div class="hc-step"><span class="hc-step-num">02</span><span>Email personal — no newsletter, no CC — con asunto: "Kore. Léelo antes que nadie."</span></div>
+        <div class="hc-step"><span class="hc-step-num">03</span><span>No pedir nada. Solo compartir. Si el manifiesto es bueno, ellos hacen el resto.</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ TIMELINE ══ -->
+<section id="timeline">
+  <div class="s-label rv">02 — Timeline</div>
+  <h2 class="s-title rv">6 meses. Semana a semana.</h2>
+  <p class="s-sub rv">Cada mes tiene un objetivo único, una narrativa dominante y un KPI que lo define. El foco cambia, la intensidad no.</p>
+  <div class="tl-months rv rv-d1">
+
+    <div class="tl-month current">
+      <span class="tm-num">Mes 1 — Ahora · Existencia</span>
+      <div class="tm-title">El mundo sabe que Kore existe.</div>
+      <div class="tm-items">
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">getkore.es publicado con manifiesto</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Redes sociales activas en 4 plataformas</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Primera ronda de emails a prensa tech</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Lista de espera abierta y funcionando</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Primer post viral: el manifiesto</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Comunidad privada Discord para primeros 100</span></div>
+      </div>
+      <div class="tm-kpi"><span class="tm-kpi-val">500</span><span class="tm-kpi-label">Emails en<br>lista de espera</span></div>
+    </div>
+
+    <div class="tl-month">
+      <span class="tm-num">Mes 2 — Producto · Hardware</span>
+      <div class="tm-title">El dispositivo empieza a tener forma.</div>
+      <div class="tm-items">
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Primer render 3D del dispositivo publicado</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Video: "Por qué el titanio y no el cristal"</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Post técnico sobre el kill switch físico</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">AMA en Reddit r/privacy y r/degoogle</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Primera entrevista a medio tech europeo</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Newsletter mensual Kore a lista de espera</span></div>
+      </div>
+      <div class="tm-kpi"><span class="tm-kpi-val">2.000</span><span class="tm-kpi-label">Emails en<br>lista de espera</span></div>
+    </div>
+
+    <div class="tl-month">
+      <span class="tm-num">Mes 3 — SO · KoreOS</span>
+      <div class="tm-title">El software se convierte en protagonista.</div>
+      <div class="tm-items">
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Demo video de KoreOS — 3 minutos de producción</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">La pantalla de inicio sin iconos — el momento viral</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Apertura del programa de developers beta</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Post: "Por qué rompimos la única regla del mobile"</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Cobertura en Hacker News y Product Hunt</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Primer prototipo a 5 reviewers seleccionados</span></div>
+      </div>
+      <div class="tm-kpi"><span class="tm-kpi-val">5.000</span><span class="tm-kpi-label">Emails en<br>lista de espera</span></div>
+    </div>
+
+    <div class="tl-month">
+      <span class="tm-num">Mes 4 — Comunidad · Pertenencia</span>
+      <div class="tm-title">Los primeros Kore son los fundadores.</div>
+      <div class="tm-items">
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Programa de Fundadores con número de serie</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Los primeros 100 en lista reciben badge digital</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Evento online privado para la comunidad</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Colaboración con 3 creadores de contenido tech</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Video: "Así construimos Kore desde un garaje"</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Segunda ronda de prensa — ahora con producto</span></div>
+      </div>
+      <div class="tm-kpi"><span class="tm-kpi-val">8.000</span><span class="tm-kpi-label">Emails en<br>lista de espera</span></div>
+    </div>
+
+    <div class="tl-month">
+      <span class="tm-num">Mes 5 — Tensión · Cuenta atrás</span>
+      <div class="tm-title">El deseo llega a su punto máximo.</div>
+      <div class="tm-items">
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Contador público de unidades disponibles</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">"Quedan X unidades de la Edición Fundadores"</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Unboxing del prototipo por reviewers seleccionados</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Precio final revelado — solo a la lista de espera</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Apertura del configurador en la web</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Campaña: "Tu número. Tu Kore."</span></div>
+      </div>
+      <div class="tm-kpi"><span class="tm-kpi-val">12.000</span><span class="tm-kpi-label">Emails en<br>lista de espera</span></div>
+    </div>
+
+    <div class="tl-month">
+      <span class="tm-num">Mes 6 — Lanzamiento · El día</span>
+      <div class="tm-title">Kore sale al mundo.</div>
+      <div class="tm-items">
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Apertura de reservas a lista de espera — 24h antes</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Lanzamiento público simultáneo global</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Video de lanzamiento — el evento cultural</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Embargo de prensa levantado — cobertura coordinada</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">Los primeros Fundadores comparten su número</span></div>
+        <div class="tm-item"><div class="tm-bullet"></div><span class="tm-text">1.000 unidades vendidas en menos de 72 horas</span></div>
+      </div>
+      <div class="tm-kpi"><span class="tm-kpi-val">1.000</span><span class="tm-kpi-label">Unidades<br>vendidas</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ CANALES ══ -->
+<section id="canales">
+  <div class="s-label rv">03 — Canales</div>
+  <h2 class="s-title rv">Todas las palancas.</h2>
+  <p class="s-sub rv">Cada canal tiene un rol específico. No se trata de estar en todos. Se trata de dominar el rol de cada uno.</p>
+  <div class="canales-grid">
+
+    <div class="canal rv">
+      <span class="ca-icon">◎</span>
+      <h3 class="ca-title">Instagram</h3>
+      <p class="ca-text">El canal del objeto. Aquí Kore es deseable antes de ser comprensible. Cada imagen comunica sin explicar. El usuario Kore vive aquí.</p>
+      <div class="ca-tactics">
+        <div class="ca-tactic">Renders del dispositivo — un ángulo por post</div>
+        <div class="ca-tactic">Detalles macro: el kill switch, el titanio, el número de serie</div>
+        <div class="ca-tactic">Behind the scenes del proceso de diseño</div>
+        <div class="ca-tactic">Reels cortos: 15 segundos de KoreOS en acción</div>
+        <div class="ca-tactic">Stories: contadores, preguntas, encuestas de comunidad</div>
+      </div>
+      <div class="ca-metric">Objetivo mes 6 — 50K seguidores</div>
+    </div>
+
+    <div class="canal rv rv-d1">
+      <span class="ca-icon">✕</span>
+      <h3 class="ca-title">X / Twitter</h3>
+      <p class="ca-text">El canal de las ideas. Donde vive la conversación tech, la prensa y los early adopters que moverán el producto. Aquí se debate, no se vende.</p>
+      <div class="ca-tactics">
+        <div class="ca-tactic">Threads técnicos: "Por qué rompimos X convención"</div>
+        <div class="ca-tactic">Hot takes sobre la industria del smartphone</div>
+        <div class="ca-tactic">Respuestas a conversaciones de privacidad y tech</div>
+        <div class="ca-tactic">Actualizaciones de desarrollo en tiempo real</div>
+        <div class="ca-tactic">El manifiesto — reposts parciales con contexto</div>
+      </div>
+      <div class="ca-metric">Objetivo mes 6 — 20K seguidores</div>
+    </div>
+
+    <div class="canal rv rv-d2">
+      <span class="ca-icon">▷</span>
+      <h3 class="ca-title">YouTube</h3>
+      <p class="ca-text">El canal de la profundidad. Los videos largos que demuestran el producto y construyen confianza. La prensa tech embedded videos. La comunidad los comparte.</p>
+      <div class="ca-tactics">
+        <div class="ca-tactic">Serie: "Building Kore" — proceso documentado</div>
+        <div class="ca-tactic">Demo de KoreOS — el video de 3 minutos</div>
+        <div class="ca-tactic">Video de lanzamiento — el evento cultural</div>
+        <div class="ca-tactic">Unboxing de la Edición Fundadores</div>
+        <div class="ca-tactic">Entrevistas con el equipo de diseño y técnico</div>
+      </div>
+      <div class="ca-metric">Objetivo mes 6 — 10K suscriptores</div>
+    </div>
+
+    <div class="canal rv">
+      <span class="ca-icon">in</span>
+      <h3 class="ca-title">LinkedIn</h3>
+      <p class="ca-text">El canal de la empresa. Aquí se construye la credibilidad corporativa, se atrae talento y se genera interés entre inversores y socios potenciales.</p>
+      <div class="ca-tactics">
+        <div class="ca-tactic">Fundadores contando el proceso en primera persona</div>
+        <div class="ca-tactic">Posts sobre filosofía de diseño y producto</div>
+        <div class="ca-tactic">Hitos del roadmap compartidos públicamente</div>
+        <div class="ca-tactic">Convocatorias de posiciones abiertas</div>
+      </div>
+      <div class="ca-metric">Objetivo mes 6 — 5K seguidores página</div>
+    </div>
+
+    <div class="canal rv rv-d1">
+      <span class="ca-icon">✉</span>
+      <h3 class="ca-title">Newsletter</h3>
+      <p class="ca-text">El canal más valioso de todos. La lista de espera es la audiencia más comprometida que existe. Cada email que les mandas es una oportunidad de convertir en comprador.</p>
+      <div class="ca-tactics">
+        <div class="ca-tactic">1 email mensual — nunca más, nunca menos</div>
+        <div class="ca-tactic">Acceso exclusivo a noticias antes que nadie</div>
+        <div class="ca-tactic">El precio se revela primero aquí</div>
+        <div class="ca-tactic">Las reservas se abren 24h antes aquí</div>
+        <div class="ca-tactic">Tono: como una carta, no como un newsletter</div>
+      </div>
+      <div class="ca-metric">Objetivo mes 6 — 12K emails · 60% open rate</div>
+    </div>
+
+    <div class="canal rv rv-d2">
+      <span class="ca-icon">◈</span>
+      <h3 class="ca-title">Comunidad — Discord</h3>
+      <p class="ca-text">El canal de los fundadores simbólicos. Las primeras 1.000 personas en Discord son los evangelistas más poderosos. Ellos hacen el marketing que ningún presupuesto puede comprar.</p>
+      <div class="ca-tactics">
+        <div class="ca-tactic">Acceso solo por invitación — crea exclusividad</div>
+        <div class="ca-tactic">Updates directas del equipo antes que nadie</div>
+        <div class="ca-tactic">Votación sobre decisiones de diseño reales</div>
+        <div class="ca-tactic">Canal de beta testers del SO</div>
+        <div class="ca-tactic">Los primeros 100 miembros tienen número de Fundador</div>
+      </div>
+      <div class="ca-metric">Objetivo mes 6 — 3K miembros activos</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ CONTENIDO ══ -->
+<section id="contenido">
+  <div class="s-label rv">04 — Contenido</div>
+  <h2 class="s-title rv">Las primeras 4 semanas.</h2>
+  <p class="s-sub rv">El contenido del mes 1 es el más importante. Define el tono de todo lo que viene. Cada post tiene que poder existir solo, sin contexto previo.</p>
+  <div class="content-cal rv rv-d1">
+
+    <div class="cc-week">
+      <span class="cc-week-num">Semana 1</span>
+      <div class="cc-week-title">La declaración</div>
+      <div class="cc-posts">
+        <div class="cc-post ig"><div class="cc-platform">Instagram</div><div class="cc-copy">El círculo. Negro. Sin texto. Link al manifiesto en bio.</div></div>
+        <div class="cc-post tw"><div class="cc-platform">X/Twitter</div><div class="cc-copy">"El smartphone moderno no es tuyo. Hemos construido la respuesta." + link manifiesto</div></div>
+        <div class="cc-post li"><div class="cc-platform">LinkedIn</div><div class="cc-copy">Post del fundador: "Por qué dejamos todo para construir Kore"</div></div>
+        <div class="cc-post blog"><div class="cc-platform">Blog / Newsletter</div><div class="cc-copy">El manifiesto completo. Primera edición de la newsletter.</div></div>
+      </div>
+    </div>
+
+    <div class="cc-week">
+      <span class="cc-week-num">Semana 2</span>
+      <div class="cc-week-title">El objeto</div>
+      <div class="cc-posts">
+        <div class="cc-post ig"><div class="cc-platform">Instagram</div><div class="cc-copy">Render del titanio en detalle macro. "Grade 5. Una pieza." Sin más.</div></div>
+        <div class="cc-post tw"><div class="cc-platform">X/Twitter</div><div class="cc-copy">Thread: "10 cosas que los fabricantes de smartphones no quieren que sepas"</div></div>
+        <div class="cc-post yt"><div class="cc-platform">YouTube</div><div class="cc-copy">Episode 1 "Building Kore" — el equipo, la idea, el por qué</div></div>
+        <div class="cc-post ig"><div class="cc-platform">Instagram Reel</div><div class="cc-copy">15 segundos: el kill switch físico. Sin audio. Solo metal.</div></div>
+      </div>
+    </div>
+
+    <div class="cc-week">
+      <span class="cc-week-num">Semana 3</span>
+      <div class="cc-week-title">El sistema</div>
+      <div class="cc-posts">
+        <div class="cc-post ig"><div class="cc-platform">Instagram</div><div class="cc-copy">Pantalla de inicio de KoreOS. "Sin iconos. Por primera vez." Caption mínimo.</div></div>
+        <div class="cc-post tw"><div class="cc-platform">X/Twitter</div><div class="cc-copy">"Rompimos la única convención que nadie había roto en mobile." Thread explicando el por qué.</div></div>
+        <div class="cc-post li"><div class="cc-platform">LinkedIn</div><div class="cc-copy">"Qué aprendimos de Dieter Rams para diseñar KoreOS"</div></div>
+        <div class="cc-post blog"><div class="cc-platform">Newsletter #2</div><div class="cc-copy">Update de desarrollo. Qué hemos construido. Qué queda. Acceso al Discord.</div></div>
+      </div>
+    </div>
+
+    <div class="cc-week">
+      <span class="cc-week-num">Semana 4</span>
+      <div class="cc-week-title">La comunidad</div>
+      <div class="cc-posts">
+        <div class="cc-post ig"><div class="cc-platform">Instagram</div><div class="cc-copy">"Ya sois 500 en la lista. Los primeros 500 tienen número de Fundador." Post con el número.</div></div>
+        <div class="cc-post tw"><div class="cc-platform">X/Twitter</div><div class="cc-copy">AMA — "Preguntadnos lo que queráis sobre Kore durante 2 horas"</div></div>
+        <div class="cc-post yt"><div class="cc-platform">YouTube</div><div class="cc-copy">Episode 2 "Building Kore" — el hardware, el titanio, las decisiones de diseño</div></div>
+        <div class="cc-post ig"><div class="cc-platform">Instagram Reel</div><div class="cc-copy">30 segundos: el packaging. La caja. El número de serie. El ritual.</div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ PRENSA ══ -->
+<section id="prensa">
+  <div class="s-label rv">05 — Prensa</div>
+  <h2 class="s-title rv">La cobertura no se compra.<br>Se merece.</h2>
+  <p class="s-sub rv">Kore no tiene presupuesto de PR. Tiene un manifiesto, un producto diferente y una historia real. Eso es más poderoso que cualquier agencia.</p>
+  <div class="press-grid">
+
+    <div class="press-card rv">
+      <span class="pc-phase">Fase 1 — Mes 1 y 2 · El manifiesto</span>
+      <h3 class="pc-title">Outreach personal. Sin intermediarios.</h3>
+      <p class="pc-text">Un email de dos párrafos a cada periodista, escrito a mano, sin template. El asunto: "Kore. Léelo antes que nadie." El cuerpo: quiénes somos, un link al manifiesto, sin pedir cobertura. Solo compartir. Los buenos periodistas tienen olfato para las historias reales.</p>
+      <div class="pc-targets">
+        <div class="pc-target"><span class="pc-target-name">Xataka</span><span class="pc-target-type">ES · Hardware · Privacidad</span></div>
+        <div class="pc-target"><span class="pc-target-name">The Verge</span><span class="pc-target-type">EN · Hardware · Diseño</span></div>
+        <div class="pc-target"><span class="pc-target-name">Wired</span><span class="pc-target-type">EN · Cultura tech</span></div>
+        <div class="pc-target"><span class="pc-target-name">Ars Technica</span><span class="pc-target-type">EN · Técnico · Privacidad</span></div>
+        <div class="pc-target"><span class="pc-target-name">El País Tecnología</span><span class="pc-target-type">ES · Audiencia masiva</span></div>
+      </div>
+    </div>
+
+    <div class="press-card rv rv-d1">
+      <span class="pc-phase">Fase 2 — Mes 3 y 4 · El producto</span>
+      <h3 class="pc-title">El prototipo en manos de 5 personas.</h3>
+      <p class="pc-text">Cuando el prototipo funcional esté listo, 5 periodistas seleccionados lo reciben con embargo hasta el día de lanzamiento. No se les pide que sean positivos. Se les pide que sean honestos. La confianza en el producto es lo que permite esto.</p>
+      <div class="pc-targets">
+        <div class="pc-target"><span class="pc-target-name">MrMobile — Michael Fisher</span><span class="pc-target-type">YouTube · 4M subs · Hardware premium</span></div>
+        <div class="pc-target"><span class="pc-target-name">Marques Brownlee</span><span class="pc-target-type">YouTube · 19M subs · Si el producto lo merece</span></div>
+        <div class="pc-target"><span class="pc-target-name">Louis Rossmann</span><span class="pc-target-type">YouTube · Reparabilidad · Audiencia perfecta</span></div>
+        <div class="pc-target"><span class="pc-target-name">Naomi Brockwell</span><span class="pc-target-type">YouTube · Privacidad · Comunidad exacta</span></div>
+        <div class="pc-target"><span class="pc-target-name">Hacker News</span><span class="pc-target-type">Show HN post · Comunidad técnica global</span></div>
+      </div>
+    </div>
+
+    <div class="press-card rv rv-d2">
+      <span class="pc-phase">Fase 3 — Mes 5 · La tensión</span>
+      <h3 class="pc-title">El embargo. La cuenta atrás.</h3>
+      <p class="pc-text">Un mes antes del lanzamiento, enviar un briefing completo a 20 medios con embargo hasta el día D. Reviews coordinadas. Todos publican el mismo día. El efecto de ver a 20 medios cubrir Kore simultáneamente es el lanzamiento en sí mismo.</p>
+      <div class="pc-targets">
+        <div class="pc-target"><span class="pc-target-name">GSMArena</span><span class="pc-target-type">EN · Hardware global</span></div>
+        <div class="pc-target"><span class="pc-target-name">AndroidAuthority</span><span class="pc-target-type">EN · Alternativas Android</span></div>
+        <div class="pc-target"><span class="pc-target-name">ComputerHoy</span><span class="pc-target-type">ES · Audiencia española masiva</span></div>
+        <div class="pc-target"><span class="pc-target-name">Engadget</span><span class="pc-target-type">EN · Tech culture</span></div>
+      </div>
+    </div>
+
+    <div class="press-card rv rv-d3">
+      <span class="pc-phase">El mensaje que no cambia nunca</span>
+      <h3 class="pc-title">Una sola historia. Contada mil veces.</h3>
+      <p class="pc-text">En todas las entrevistas, en todos los posts, en todos los emails a prensa, la historia es la misma: el smartphone que llevas en el bolsillo no es tuyo. Kore es el primero que sí lo es. Cada vez que alguien del equipo habla con un periodista, repite esta frase en algún momento de la conversación. La consistencia construye narrativa. La narrativa construye marca.</p>
+      <div class="pc-targets">
+        <div class="pc-target"><span class="pc-target-name">El mensaje</span><span class="pc-target-type">"El smartphone que es tuyo de verdad"</span></div>
+        <div class="pc-target"><span class="pc-target-name">El dato</span><span class="pc-target-type">"1.000 unidades. Telemetría cero. 7 años."</span></div>
+        <div class="pc-target"><span class="pc-target-name">El diferenciador</span><span class="pc-target-type">"El único kill switch físico del mercado"</span></div>
+        <div class="pc-target"><span class="pc-target-name">La postura</span><span class="pc-target-type">"No competimos en specs. Competimos en valores."</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ MÉTRICAS ══ -->
+<section id="metricas">
+  <div class="s-label rv">06 — Métricas</div>
+  <h2 class="s-title rv">Lo que mides<br>es lo que construyes.</h2>
+  <p class="s-sub rv">Kore no mide impresiones ni alcance. Mide compromiso real. Cada métrica representa una persona que ha tomado una decisión activa sobre Kore.</p>
+  <div class="metrics-grid">
+
+    <div class="metric-card rv">
+      <span class="mc-phase">Mes 1–2 · Tracción inicial</span>
+      <div class="mc-rows">
+        <div class="mc-row"><span class="mc-label">Emails lista espera</span><span class="mc-target">2.000</span></div>
+        <div class="mc-row"><span class="mc-label">Miembros Discord</span><span class="mc-target">500</span></div>
+        <div class="mc-row"><span class="mc-label">Seguidores Instagram</span><span class="mc-target">5.000</span></div>
+        <div class="mc-row"><span class="mc-label">Menciones en prensa</span><span class="mc-target">3</span></div>
+        <div class="mc-row"><span class="mc-label">Open rate newsletter</span><span class="mc-target">65%</span></div>
+      </div>
+    </div>
+
+    <div class="metric-card rv rv-d1">
+      <span class="mc-phase">Mes 3–4 · Aceleración</span>
+      <div class="mc-rows">
+        <div class="mc-row"><span class="mc-label">Emails lista espera</span><span class="mc-target">8.000</span></div>
+        <div class="mc-row"><span class="mc-label">Developers beta SO</span><span class="mc-target">100</span></div>
+        <div class="mc-row"><span class="mc-label">Seguidores Instagram</span><span class="mc-target">25.000</span></div>
+        <div class="mc-row"><span class="mc-label">Views demo KoreOS</span><span class="mc-target">500K</span></div>
+        <div class="mc-row"><span class="mc-label">Menciones en prensa</span><span class="mc-target">15</span></div>
+      </div>
+    </div>
+
+    <div class="metric-card rv rv-d2">
+      <span class="mc-phase">Mes 5–6 · Lanzamiento</span>
+      <div class="mc-rows">
+        <div class="mc-row"><span class="mc-label">Emails lista espera</span><span class="mc-target">12.000</span></div>
+        <div class="mc-row"><span class="mc-label">Unidades reservadas</span><span class="mc-target">1.000</span></div>
+        <div class="mc-row"><span class="mc-label">Seguidores totales</span><span class="mc-target">80.000</span></div>
+        <div class="mc-row"><span class="mc-label">Reviews en prensa</span><span class="mc-target">20</span></div>
+        <div class="mc-row"><span class="mc-label">Tiempo para sold out</span><span class="mc-target">&lt; 72h</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ REGLAS DE ORO ══ -->
+<section id="reglas" style="padding:120px 48px">
+  <div class="reglas-inner">
+    <div class="s-label rv" style="justify-content:center">07 — Reglas de oro</div>
+    <h2 class="s-title rv" style="text-align:center">Lo que nunca cambia.</h2>
+    <div class="reglas-list rv rv-d1">
+
+      <div class="regla">
+        <div class="regla-num">1</div>
+        <div class="regla-body">
+          <div class="regla-title">Nunca antes de estar listo.</div>
+          <div class="regla-text">Si algo no es perfecto, no sale. Un post mediocre de Kore hace más daño que no publicar. La consistencia de calidad construye la expectativa de calidad en el producto.</div>
+        </div>
+      </div>
+
+      <div class="regla">
+        <div class="regla-num">2</div>
+        <div class="regla-body">
+          <div class="regla-title">Una historia. Contada de mil formas.</div>
+          <div class="regla-text">El mensaje no cambia. El formato sí. En Instagram es una imagen. En Twitter es un thread. En YouTube es un video. En el email es una carta. Pero la historia es siempre la misma: el smartphone que es tuyo de verdad.</div>
+        </div>
+      </div>
+
+      <div class="regla">
+        <div class="regla-num">3</div>
+        <div class="regla-body">
+          <div class="regla-title">La comunidad antes que los medios.</div>
+          <div class="regla-text">Las primeras 1.000 personas de la lista saben las cosas antes que los periodistas. Siempre. Esa inversión en ellos los convierte en los mejores relaciones públicas que existen. Sin coste.</div>
+        </div>
+      </div>
+
+      <div class="regla">
+        <div class="regla-num">4</div>
+        <div class="regla-body">
+          <div class="regla-title">Construir en público, pero con criterio.</div>
+          <div class="regla-text">Mostrar el proceso genera comunidad. Pero no todo el proceso se muestra. Lo que se comparte tiene que reforzar la narrativa de excelencia. Los errores se cuentan cuando ya están resueltos, nunca en tiempo real.</div>
+        </div>
+      </div>
+
+      <div class="regla">
+        <div class="regla-num">5</div>
+        <div class="regla-body">
+          <div class="regla-title">La escasez no se simula. Se gestiona.</div>
+          <div class="regla-text">1.000 unidades es real. No es marketing. Cuando se acaben, se acaban. Eso significa que hay que estar preparados para el momento en que alguien quiera comprar y no pueda. Ese momento bien gestionado genera la lista de espera de la segunda edición.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="ft-logo">Kore</span>
+  <span style="font-size:9px;letter-spacing:.2em;color:var(--ti)">Estrategia de lanzamiento · 6 meses · Global</span>
+  <span class="ft-copy">© 2026 Kore · getkore.es</span>
+</footer>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function tick(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cur2.style.left=rx+'px';cur2.style.top=ry+'px';requestAnimationFrame(tick)})();
+
+// NAV DATE
+const days=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const months=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const now=new Date();
+document.getElementById('nav-date').textContent=days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+
+// REVEAL
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.08});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+// SCROLL NAV
+const sections=['hero','hoy','timeline','canales','contenido','prensa','metricas','reglas'];
+const dots=document.querySelectorAll('.sn-dot');
+function goto(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+window.addEventListener('scroll',()=>{
+  let current='hero';
+  sections.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<200)current=id});
+  dots.forEach((d,i)=>{d.classList.toggle('active',sections[i]===current)});
+});
+
+// METRIC BARS
+const metObs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.mc-bar').forEach((bar,i)=>{
+        setTimeout(()=>{bar.style.width=bar.dataset.w||'70%'},i*150);
+      });
+    }
+  });
+},{threshold:.2});
+document.querySelectorAll('.metric-card').forEach(el=>metObs.observe(el));
+</script>
+</body>
+</html>

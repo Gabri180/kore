@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kore — Manifiesto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --black:#090909;
+  --white:#f4f1eb;
+  --titanium:#7a7a76;
+  --titanium-light:#b0ada8;
+  --amber:#c8a96e;
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-mono:'DM Mono',monospace;
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:var(--font-mono);
+  font-weight:300;
+  min-height:100vh;
+  cursor:none;
+}
+
+/* CURSOR */
+#cur{position:fixed;width:6px;height:6px;background:var(--white);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:opacity .2s}
+#cur-r{position:fixed;width:26px;height:26px;border:1px solid rgba(244,241,235,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  padding:28px 56px;
+  display:flex;justify-content:space-between;align-items:center;
+  z-index:100;
+  mix-blend-mode:normal;
+}
+.nav-logo{
+  font-family:var(--font-serif);
+  font-size:20px;font-weight:300;letter-spacing:.35em;
+  color:var(--white);text-decoration:none;opacity:.5;
+  transition:opacity .2s;
+}
+.nav-logo:hover{opacity:1}
+.nav-right{display:flex;align-items:center;gap:20px}
+.lang-btn{
+  font-size:9px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--titanium);background:none;border:none;cursor:none;
+  transition:color .2s;padding:4px 0;
+  border-bottom:1px solid transparent;
+}
+.lang-btn:hover,.lang-btn.active{color:var(--amber);border-bottom-color:var(--amber)}
+
+/* MAIN */
+main{
+  max-width:680px;
+  margin:0 auto;
+  padding:160px 56px 120px;
+  position:relative;
+}
+
+/* HEADER */
+.m-header{
+  margin-bottom:96px;
+  display:flex;flex-direction:column;gap:20px;
+}
+.m-label{
+  font-size:9px;letter-spacing:.5em;text-transform:uppercase;
+  color:var(--amber);
+  display:flex;align-items:center;gap:16px;
+}
+.m-label::after{content:'';flex:0 0 40px;height:1px;background:rgba(200,169,110,.3)}
+.m-title{
+  font-family:var(--font-serif);
+  font-size:clamp(48px,7vw,88px);
+  font-weight:300;letter-spacing:.15em;
+  color:var(--white);line-height:1;
+}
+.m-date{
+  font-size:10px;letter-spacing:.3em;
+  color:var(--titanium);opacity:.5;
+  margin-top:8px;
+}
+
+/* DIVIDER */
+.m-div{
+  width:32px;height:1px;
+  background:rgba(244,241,235,.1);
+  margin:48px 0;
+}
+
+/* BODY */
+.m-block{margin-bottom:40px}
+
+.m-p{
+  font-family:var(--font-serif);
+  font-size:clamp(18px,2.2vw,24px);
+  font-weight:300;letter-spacing:.02em;
+  line-height:1.75;color:var(--white);
+}
+
+.m-p.dim{color:var(--titanium-light)}
+.m-p.amber{color:var(--amber)}
+
+.m-fact{
+  font-family:var(--font-mono);
+  font-size:11px;letter-spacing:.18em;
+  color:var(--titanium);line-height:2.2;
+  padding-left:20px;
+  border-left:1px solid rgba(200,169,110,.25);
+}
+.m-fact span{color:var(--white)}
+
+/* SIGNATURE */
+.m-sig{
+  margin-top:96px;
+  padding-top:48px;
+  border-top:1px solid rgba(244,241,235,.06);
+  display:flex;justify-content:space-between;align-items:flex-end;
+}
+.m-sig-logo{
+  font-family:var(--font-serif);
+  font-size:36px;font-weight:300;letter-spacing:.35em;
+  color:var(--white);
+}
+.m-sig-right{
+  text-align:right;
+  display:flex;flex-direction:column;gap:6px;
+}
+.m-sig-num{
+  font-size:10px;letter-spacing:.3em;color:var(--amber);
+}
+.m-sig-year{
+  font-size:10px;letter-spacing:.25em;color:var(--titanium);opacity:.4;
+}
+
+/* WORD COUNT */
+.m-wc{
+  position:fixed;bottom:32px;right:56px;
+  font-size:9px;letter-spacing:.3em;
+  color:var(--titanium);opacity:.25;
+  text-transform:uppercase;
+}
+
+/* PRINT */
+@media print{
+  body{background:#fff;color:#111}
+  nav,.m-wc{display:none}
+  main{padding:60px 40px}
+  .m-p{color:#111}
+  .m-p.dim{color:#555}
+  .m-fact{color:#666;border-left-color:#ccc}
+  .m-fact span{color:#111}
+}
+
+@media(max-width:640px){
+  nav{padding:20px 24px}
+  main{padding:120px 24px 80px}
+  .m-wc{right:24px}
+}
+
+/* FADE IN */
+.fade{opacity:0;transform:translateY(16px);transition:opacity .8s ease,transform .8s ease}
+.fade.in{opacity:1;transform:none}
+.fd1{transition-delay:.05s}
+.fd2{transition-delay:.15s}
+.fd3{transition-delay:.28s}
+.fd4{transition-delay:.42s}
+.fd5{transition-delay:.56s}
+.fd6{transition-delay:.7s}
+.fd7{transition-delay:.84s}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<nav>
+  <a href="#" class="nav-logo">Kore</a>
+  <div class="nav-right">
+    <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</nav>
+
+<main>
+
+  <header class="m-header">
+    <div class="m-label fade fd1" data-es="Manifiesto" data-en="Manifesto">Manifiesto</div>
+    <h1 class="m-title fade fd2">Kore</h1>
+    <div class="m-date fade fd3">2026 — Edición 001</div>
+  </header>
+
+  <!-- BLOQUE 1 -->
+  <div class="m-block fade fd3">
+    <p class="m-p" data-es="El smartphone que llevas en el bolsillo sabe más sobre ti que cualquier persona en tu vida." data-en="The smartphone in your pocket knows more about you than anyone in your life.">El smartphone que llevas en el bolsillo sabe más sobre ti que cualquier persona en tu vida.</p>
+  </div>
+
+  <div class="m-block fade fd4">
+    <p class="m-p dim" data-es="Sabe dónde duermes. Con quién hablas. Qué buscas a las 2 de la mañana. Cuánto dinero tienes. Lo que te preocupa. Lo que deseas." data-en="It knows where you sleep. Who you talk to. What you search for at 2 in the morning. How much money you have. What worries you. What you desire.">Sabe dónde duermes. Con quién hablas. Qué buscas a las 2 de la mañana. Cuánto dinero tienes. Lo que te preocupa. Lo que deseas.</p>
+  </div>
+
+  <div class="m-block fade fd4">
+    <p class="m-p dim" data-es="Y no es tuyo." data-en="And it is not yours.">Y no es tuyo.</p>
+  </div>
+
+  <div class="m-div fade fd4"></div>
+
+  <!-- BLOQUE 2 -->
+  <div class="m-block fade fd5">
+    <p class="m-p" data-es="Fue diseñado para durar 18 meses. Para que lo repare quien lo hizo, no quien lo compró. Para enviar datos a servidores que no controlas. Para que salir cueste demasiado." data-en="It was designed to last 18 months. To be repaired by those who made it, not those who bought it. To send data to servers you don't control. To make leaving cost too much.">Fue diseñado para durar 18 meses. Para que lo repare quien lo hizo, no quien lo compró. Para enviar datos a servidores que no controlas. Para que salir cueste demasiado.</p>
+  </div>
+
+  <div class="m-block fade fd5">
+    <p class="m-p dim" data-es="Esto no es un accidente. Es el modelo de negocio." data-en="This is not an accident. It is the business model.">Esto no es un accidente. Es el modelo de negocio.</p>
+  </div>
+
+  <div class="m-div fade fd5"></div>
+
+  <!-- BLOQUE 3 — LOS HECHOS -->
+  <div class="m-block fade fd6">
+    <div class="m-fact">
+      <div data-es="<span>Titanio Grade 5.</span> Mecanizado en una pieza. Sin costuras." data-en="<span>Grade 5 Titanium.</span> Machined in one piece. No seams."><span>Titanio Grade 5.</span> Mecanizado en una pieza. Sin costuras.</div>
+      <div data-es="<span>1.000 unidades.</span> No más. Nunca." data-en="<span>1,000 units.</span> No more. Never."><span>1.000 unidades.</span> No más. Nunca.</div>
+      <div data-es="<span>7 años</span> de actualizaciones garantizadas." data-en="<span>7 years</span> of guaranteed updates."><span>7 años</span> de actualizaciones garantizadas.</div>
+      <div data-es="<span>Cero</span> datos enviados. Verificado." data-en="<span>Zero</span> data sent. Verified."><span>Cero</span> datos enviados. Verificado.</div>
+      <div data-es="<span>Kill switch físico.</span> Hardware. No software." data-en="<span>Physical kill switch.</span> Hardware. Not software."><span>Kill switch físico.</span> Hardware. No software.</div>
+    </div>
+  </div>
+
+  <div class="m-div fade fd6"></div>
+
+  <!-- BLOQUE 4 -->
+  <div class="m-block fade fd6">
+    <p class="m-p" data-es="Kore no es el smartphone más barato. No es el más espectacular en specs. No viene con el ecosistema más grande." data-en="Kore is not the cheapest smartphone. Not the most impressive in specs. It doesn't come with the biggest ecosystem.">Kore no es el smartphone más barato. No es el más espectacular en specs. No viene con el ecosistema más grande.</p>
+  </div>
+
+  <div class="m-block fade fd6">
+    <p class="m-p amber" data-es="Es el único que, cuando lo compras, es completamente tuyo." data-en="It is the only one that, when you buy it, is completely yours.">Es el único que, cuando lo compras, es completamente tuyo.</p>
+  </div>
+
+  <div class="m-div fade fd7"></div>
+
+  <!-- BLOQUE 5 — CIERRE -->
+  <div class="m-block fade fd7">
+    <p class="m-p dim" data-es="Si has llegado hasta aquí, ya sabes si esto es para ti." data-en="If you've made it this far, you already know if this is for you.">Si has llegado hasta aquí, ya sabes si esto es para ti.</p>
+  </div>
+
+  <div class="m-block fade fd7">
+    <p class="m-p dim" data-es="No necesitas convencerte. Solo decidir." data-en="You don't need to convince yourself. Just decide.">No necesitas convencerte. Solo decidir.</p>
+  </div>
+
+  <!-- FIRMA -->
+  <div class="m-sig fade fd7">
+    <div class="m-sig-logo">Kore</div>
+    <div class="m-sig-right">
+      <div class="m-sig-num" data-es="Edición Fundadores · 1.000 unidades" data-en="Founders Edition · 1,000 units">Edición Fundadores · 1.000 unidades</div>
+      <div class="m-sig-year">2026</div>
+    </div>
+  </div>
+
+</main>
+
+<div class="m-wc" id="wc">— palabras</div>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),curR=document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+});
+(function tick(){
+  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+  curR.style.left=rx+'px';curR.style.top=ry+'px';
+  requestAnimationFrame(tick);
+})();
+
+// REVEAL
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
+},{threshold:.08});
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+
+// LANG
+function setLang(lang){
+  document.documentElement.setAttribute('data-lang',lang);
+  document.getElementById('btn-es').classList.toggle('active',lang==='es');
+  document.getElementById('btn-en').classList.toggle('active',lang==='en');
+  document.querySelectorAll('[data-'+lang+']').forEach(el=>{
+    el.innerHTML=el.getAttribute('data-'+lang);
+  });
+  countWords();
+}
+
+// WORD COUNT
+function countWords(){
+  const lang=document.documentElement.getAttribute('data-lang')||'es';
+  const text=Array.from(document.querySelectorAll('.m-p,.m-fact'))
+    .map(el=>el.textContent).join(' ');
+  const count=text.trim().split(/\s+/).filter(Boolean).length;
+  const label=lang==='es'?count+' palabras':count+' words';
+  document.getElementById('wc').textContent='— '+label;
+}
+countWords();
+</script>
+</body>
+</html>

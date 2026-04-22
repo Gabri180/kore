@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kore — Lista de Espera · Edición Fundadores</title>
+<meta name="description" content="1.000 unidades. Edición Fundadores. El smartphone que es tuyo de verdad.">
+<meta property="og:title" content="Kore — Edición Fundadores">
+<meta property="og:description" content="1.000 unidades. El smartphone que es tuyo de verdad.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#080808;
+  --off:#101010;
+  --ti:#888884;
+  --ti-l:#b0ada8;
+  --white:#f4f1eb;
+  --amber:#c8a96e;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --mono:'DM Mono',monospace;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+html,body{height:100%}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:var(--mono);
+  font-weight:300;
+  cursor:none;
+  overflow-x:hidden;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* CURSOR */
+#cur{position:fixed;width:6px;height:6px;background:var(--white);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s}
+#cur2{position:fixed;width:28px;height:28px;border:1px solid rgba(244,241,235,.18);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+
+/* GRAIN */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.3;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")}
+.glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 50% at 50% 55%,rgba(200,169,110,.07),transparent 65%)}
+
+/* LAYOUT */
+main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:80px 24px;
+  position:relative;
+  z-index:1;
+  text-align:center;
+  min-height:100vh;
+}
+
+/* TOP BAR */
+.topbar{
+  position:fixed;top:0;left:0;right:0;
+  padding:24px 40px;
+  display:flex;justify-content:space-between;align-items:center;
+  z-index:10;
+}
+.tb-logo{
+  font-family:var(--serif);font-size:20px;font-weight:300;
+  letter-spacing:.35em;color:var(--white);text-decoration:none;
+  opacity:.7;transition:opacity .2s;
+}
+.tb-logo:hover{opacity:1}
+.tb-lang{
+  font-size:9px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--ti);background:none;border:none;cursor:none;
+  transition:color .2s;
+}
+.tb-lang:hover{color:var(--amber)}
+
+/* CONTENT */
+.edition-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:9px;letter-spacing:.5em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:40px;
+  animation:fu 1s var(--ease) .1s both;
+}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:var(--amber);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+
+.logo-mark{
+  margin-bottom:40px;
+  animation:fu 1s var(--ease) .2s both;
+}
+.logo-mark svg{width:80px;height:80px}
+.lm-circle{
+  fill:none;stroke:var(--white);stroke-width:1;
+  stroke-dasharray:226;stroke-dashoffset:226;
+  animation:draw 2s var(--ease) .5s forwards;
+}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+.main-title{
+  font-family:var(--serif);
+  font-size:clamp(64px,10vw,130px);
+  font-weight:300;letter-spacing:.25em;
+  line-height:1;color:var(--white);
+  margin-bottom:20px;
+  animation:fu 1s var(--ease) .3s both;
+}
+.main-sub{
+  font-family:var(--serif);
+  font-size:clamp(15px,2vw,20px);
+  font-weight:300;font-style:italic;
+  color:var(--ti-l);letter-spacing:.04em;
+  margin-bottom:64px;
+  animation:fu 1s var(--ease) .5s both;
+}
+
+/* FORM */
+.form-wrap{
+  width:100%;max-width:480px;
+  animation:fu 1s var(--ease) .7s both;
+}
+.kore-form{display:flex;gap:0;width:100%}
+.kore-input{
+  flex:1;
+  background:rgba(244,241,235,.04);
+  border:1px solid rgba(244,241,235,.12);
+  border-right:none;
+  color:var(--white);
+  font-family:var(--mono);font-size:12px;
+  letter-spacing:.15em;
+  padding:16px 20px;
+  outline:none;
+  transition:border-color .2s;
+  -webkit-appearance:none;
+}
+.kore-input::placeholder{color:var(--ti)}
+.kore-input:focus{border-color:rgba(200,169,110,.45)}
+.kore-btn{
+  background:var(--amber);
+  border:1px solid var(--amber);
+  color:var(--black);
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.28em;text-transform:uppercase;
+  padding:16px 28px;
+  cursor:none;
+  transition:background .2s,border-color .2s,color .2s;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.kore-btn:hover{background:var(--white);border-color:var(--white)}
+.kore-btn:disabled{opacity:.5;cursor:default}
+
+/* LOADING STATE */
+.kore-btn.loading{
+  background:rgba(200,169,110,.3);
+  border-color:rgba(200,169,110,.3);
+  color:var(--amber);
+  pointer-events:none;
+}
+.kore-btn.loading::after{
+  content:'';
+  display:inline-block;
+  width:10px;height:10px;
+  border:1px solid var(--amber);
+  border-top-color:transparent;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+  margin-left:10px;
+  vertical-align:middle;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SUCCESS */
+.success-state{
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
+  padding:32px 0;
+  animation:fu .6s var(--ease) both;
+}
+.success-circle{
+  width:48px;height:48px;
+  border:1px solid var(--amber);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--amber);font-size:20px;
+}
+.success-title{
+  font-family:var(--serif);
+  font-size:28px;font-weight:300;font-style:italic;
+  color:var(--white);
+}
+.success-sub{
+  font-size:10px;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--ti);
+}
+.success-num{
+  font-family:var(--mono);
+  font-size:11px;letter-spacing:.3em;
+  color:var(--amber);
+  margin-top:8px;
+}
+
+/* ERROR */
+.error-msg{
+  display:none;
+  font-size:10px;letter-spacing:.15em;
+  color:#c04030;margin-top:12px;
+}
+
+.form-note{
+  margin-top:16px;
+  font-size:9px;letter-spacing:.25em;
+  color:var(--ti);opacity:.45;
+}
+
+/* STATS */
+.stats{
+  display:flex;gap:48px;
+  margin-top:56px;
+  padding-top:48px;
+  border-top:1px solid rgba(244,241,235,.07);
+  animation:fu 1s var(--ease) .9s both;
+}
+.stat{display:flex;flex-direction:column;gap:6px;align-items:center}
+.stat-val{
+  font-family:var(--serif);
+  font-size:28px;font-weight:300;
+  color:var(--white);line-height:1;
+}
+.stat-lbl{
+  font-size:8px;letter-spacing:.35em;
+  text-transform:uppercase;color:var(--ti);
+}
+
+/* MANIFESTO LINK */
+.manifesto-link{
+  margin-top:40px;
+  font-size:10px;letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--ti);
+  text-decoration:none;
+  display:inline-flex;align-items:center;gap:10px;
+  transition:color .2s;
+  animation:fu 1s var(--ease) 1s both;
+}
+.manifesto-link:hover{color:var(--amber)}
+.manifesto-link::after{content:'→';transition:transform .2s}
+.manifesto-link:hover::after{transform:translateX(4px)}
+
+/* FOOTER */
+footer{
+  position:relative;z-index:1;
+  padding:24px 40px;
+  display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid rgba(244,241,235,.05);
+}
+.ft-copy{font-size:9px;letter-spacing:.2em;color:var(--ti);opacity:.3}
+.ft-domain{font-size:9px;letter-spacing:.2em;color:var(--ti);opacity:.4}
+
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* MOBILE */
+@media(max-width:560px){
+  .topbar{padding:20px 24px}
+  .kore-form{flex-direction:column}
+  .kore-input{border-right:1px solid rgba(244,241,235,.12);border-bottom:none}
+  .kore-btn{width:100%;padding:16px}
+  .stats{gap:28px}
+  footer{flex-direction:column;gap:12px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur2"></div>
+<div class="grain"></div>
+<div class="glow"></div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="/" class="tb-logo">Kore</a>
+  <button class="tb-lang" onclick="toggleLang()" id="lang-btn">EN</button>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <div class="edition-badge">
+    <div class="badge-dot"></div>
+    <span id="t-badge">Edición Fundadores · Lista de espera abierta</span>
+  </div>
+
+  <div class="logo-mark">
+    <svg viewBox="0 0 80 80">
+      <circle class="lm-circle" cx="40" cy="40" r="36"/>
+    </svg>
+  </div>
+
+  <h1 class="main-title">Kore</h1>
+
+  <p class="main-sub" id="t-sub">El smartphone que es tuyo de verdad.</p>
+
+  <!-- FORM AREA -->
+  <div class="form-wrap">
+
+    <!-- FORM -->
+    <div id="form-area">
+      <form class="kore-form" id="kore-waitlist-form" novalidate>
+        <input
+          class="kore-input"
+          type="email"
+          id="email-input"
+          name="email"
+          placeholder="tu@email.com"
+          required
+          autocomplete="email"
+        >
+        <button class="kore-btn" type="submit" id="submit-btn">
+          <span id="btn-text">Reservar</span>
+        </button>
+      </form>
+      <div class="error-msg" id="error-msg">Algo salió mal. Inténtalo de nuevo.</div>
+      <p class="form-note" id="t-note">Sin spam · Sin compromisos · Solo Kore</p>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-state" id="success-state">
+      <div class="success-circle">✓</div>
+      <div class="success-title" id="t-success-title">Estás dentro.</div>
+      <div class="success-sub" id="t-success-sub">Edición Fundadores · Acceso prioritario</div>
+      <div class="success-num" id="t-success-note">Recibirás noticias en founders@getkore.es</div>
+    </div>
+
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-val">1.000</div>
+      <div class="stat-lbl" id="t-stat1">Unidades totales</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">7</div>
+      <div class="stat-lbl" id="t-stat2">Años garantizados</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">0</div>
+      <div class="stat-lbl" id="t-stat3">Datos enviados</div>
+    </div>
+  </div>
+
+  <!-- MANIFESTO LINK -->
+  <a href="/manifiesto" class="manifesto-link" id="t-mani">Leer el manifiesto</a>
+
+</main>
+
+<footer>
+  <span class="ft-copy" id="t-footer">© 2026 Kore</span>
+  <span class="ft-domain">getkore.es</span>
+</footer>
+
+<script>
+// ── CURSOR
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function tick(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cur2.style.left=rx+'px';cur2.style.top=ry+'px';requestAnimationFrame(tick)})();
+
+// ── LANG
+const LOOPS_ENDPOINT='https://app.loops.so/api/newsletter-form/cmoaa5s5400fn0iyn28i438p5';
+let lang='es';
+const copy={
+  es:{
+    badge:'Edición Fundadores · Lista de espera abierta',
+    sub:'El smartphone que es tuyo de verdad.',
+    btn:'Reservar',
+    note:'Sin spam · Sin compromisos · Solo Kore',
+    placeholder:'tu@email.com',
+    successTitle:'Estás dentro.',
+    successSub:'Edición Fundadores · Acceso prioritario',
+    successNote:'Recibirás noticias en founders@getkore.es',
+    error:'Algo salió mal. Inténtalo de nuevo.',
+    stat1:'Unidades totales',stat2:'Años garantizados',stat3:'Datos enviados',
+    mani:'Leer el manifiesto',
+    footer:'© 2026 Kore',
+    loading:'Un momento...'
+  },
+  en:{
+    badge:'Founders Edition · Waitlist open',
+    sub:'The smartphone that is truly yours.',
+    btn:'Reserve',
+    note:'No spam · No commitment · Just Kore',
+    placeholder:'you@email.com',
+    successTitle:'You\'re in.',
+    successSub:'Founders Edition · Priority access',
+    successNote:'You\'ll hear from us at founders@getkore.es',
+    error:'Something went wrong. Please try again.',
+    stat1:'Total units',stat2:'Guaranteed years',stat3:'Data sent',
+    mani:'Read the manifesto',
+    footer:'© 2026 Kore',
+    loading:'Please wait...'
+  }
+};
+
+function toggleLang(){
+  lang=lang==='es'?'en':'es';
+  document.getElementById('lang-btn').textContent=lang==='es'?'EN':'ES';
+  applyLang();
+}
+
+function applyLang(){
+  const c=copy[lang];
+  document.getElementById('t-badge').textContent=c.badge;
+  document.getElementById('t-sub').textContent=c.sub;
+  document.getElementById('btn-text').textContent=c.btn;
+  document.getElementById('t-note').textContent=c.note;
+  document.getElementById('email-input').placeholder=c.placeholder;
+  document.getElementById('t-success-title').textContent=c.successTitle;
+  document.getElementById('t-success-sub').textContent=c.successSub;
+  document.getElementById('t-success-note').textContent=c.successNote;
+  document.getElementById('error-msg').textContent=c.error;
+  document.getElementById('t-stat1').textContent=c.stat1;
+  document.getElementById('t-stat2').textContent=c.stat2;
+  document.getElementById('t-stat3').textContent=c.stat3;
+  document.getElementById('t-mani').childNodes[0].textContent=c.mani;
+  document.getElementById('t-footer').textContent=c.footer;
+  document.querySelector('title').textContent=lang==='es'?'Kore — Lista de Espera · Edición Fundadores':'Kore — Waitlist · Founders Edition';
+}
+
+// ── FORM SUBMIT → LOOPS
+document.getElementById('kore-waitlist-form').addEventListener('submit',async function(e){
+  e.preventDefault();
+
+  const email=document.getElementById('email-input').value.trim();
+  const btn=document.getElementById('submit-btn');
+  const btnText=document.getElementById('btn-text');
+  const errorEl=document.getElementById('error-msg');
+  const c=copy[lang];
+
+  // Validate
+  if(!email||!email.includes('@')||!email.includes('.')){
+    errorEl.style.display='block';
+    errorEl.textContent=lang==='es'?'Introduce un email válido.':'Please enter a valid email.';
+    return;
+  }
+
+  // Rate limit check
+  const lastSubmit=localStorage.getItem('kore-submit-ts');
+  const now=Date.now();
+  if(lastSubmit&&now-Number(lastSubmit)<60000){
+    errorEl.style.display='block';
+    errorEl.textContent=lang==='es'?'Ya te has apuntado recientemente.':'You signed up recently.';
+    return;
+  }
+
+  // Loading state
+  btn.classList.add('loading');
+  btnText.textContent=c.loading;
+  errorEl.style.display='none';
+
+  try{
+    const body='userGroup=founders&mailingLists=&email='+encodeURIComponent(email);
+    const res=await fetch(LOOPS_ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body
+    });
+
+    if(res.ok){
+      localStorage.setItem('kore-submit-ts',now.toString());
+      // Show success
+      document.getElementById('form-area').style.opacity='0';
+      document.getElementById('form-area').style.transform='translateY(-8px)';
+      document.getElementById('form-area').style.transition='opacity .4s ease, transform .4s ease';
+      setTimeout(()=>{
+        document.getElementById('form-area').style.display='none';
+        const s=document.getElementById('success-state');
+        s.style.display='flex';
+        s.style.animation='fu .7s ease both';
+      },400);
+    } else {
+      const data=await res.json().catch(()=>({}));
+      errorEl.style.display='block';
+      errorEl.textContent=data.message||c.error;
+      btn.classList.remove('loading');
+      btnText.textContent=c.btn;
+    }
+  } catch(err){
+    // Cloudflare / network error
+    errorEl.style.display='block';
+    errorEl.textContent=c.error;
+    btn.classList.remove('loading');
+    btnText.textContent=c.btn;
+    localStorage.setItem('kore-submit-ts','');
+  }
+});
+</script>
+</body>
+</html>

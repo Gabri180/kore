@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kore — Sistema de Identidad Visual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&family=Helvetica+Neue&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f4f2ee;
+    --warm-white: #ede9e3;
+    --titanium: #8a8a86;
+    --titanium-light: #b8b6b0;
+    --accent: #c8a96e;
+    --accent-dark: #9a7d4a;
+    --red: #c0392b;
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--white);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(244,242,238,0.3);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s ease, width 0.2s, height 0.2s, opacity 0.2s;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    padding: 28px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 100;
+    border-bottom: 1px solid rgba(244,242,238,0.06);
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,10,0.7);
+  }
+  .nav-logo {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--white);
+    opacity: 0.9;
+  }
+  .nav-links {
+    display: flex; gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--titanium-light);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  /* Sections */
+  section {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .section-label {
+    position: absolute;
+    top: 48px; left: 48px;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--titanium);
+    opacity: 0.6;
+  }
+
+  /* ─── HERO ─── */
+  #hero {
+    flex-direction: column;
+    text-align: center;
+    background: var(--black);
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 60%, rgba(200,169,110,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-logo-wrap {
+    position: relative;
+    margin-bottom: 64px;
+    animation: fadeUp 1.2s ease forwards;
+    opacity: 0;
+  }
+
+  .logo-svg {
+    width: 120px; height: 120px;
+  }
+
+  .logo-circle {
+    fill: none;
+    stroke: var(--white);
+    stroke-width: 1.2;
+    stroke-dasharray: 376;
+    stroke-dashoffset: 376;
+    animation: drawCircle 2s cubic-bezier(0.4,0,0.2,1) 0.5s forwards;
+  }
+
+  @keyframes drawCircle {
+    to { stroke-dashoffset: 0; }
+  }
+
+  .hero-name {
+    font-family: var(--font-display);
+    font-size: clamp(72px, 10vw, 140px);
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    line-height: 1;
+    color: var(--white);
+    animation: fadeUp 1.2s ease 0.3s forwards;
+    opacity: 0;
+    margin-bottom: 24px;
+  }
+
+  .hero-tagline {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--titanium);
+    animation: fadeUp 1.2s ease 0.6s forwards;
+    opacity: 0;
+    margin-bottom: 64px;
+  }
+
+  .hero-number {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    animation: fadeUp 1.2s ease 0.9s forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── LOGO SYSTEM ─── */
+  #logos {
+    background: var(--black);
+    flex-direction: column;
+    gap: 80px;
+  }
+
+  .logos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    width: 100%; max-width: 960px;
+  }
+
+  .logo-cell {
+    aspect-ratio: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 24px;
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .logo-cell:nth-child(1) { background: var(--white); }
+  .logo-cell:nth-child(2) { background: var(--black); border: 1px solid rgba(244,242,238,0.1); }
+  .logo-cell:nth-child(3) { background: var(--accent); }
+
+  .logo-cell svg { width: 64px; height: 64px; }
+  .logo-cell:nth-child(1) svg circle { stroke: var(--black); }
+  .logo-cell:nth-child(2) svg circle { stroke: var(--white); }
+  .logo-cell:nth-child(3) svg circle { stroke: var(--black); }
+
+  .logo-cell-label {
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+  .logo-cell:nth-child(1) .logo-cell-label { color: var(--black); }
+  .logo-cell:nth-child(3) .logo-cell-label { color: var(--black); }
+
+  /* ─── PALETA ─── */
+  #palette {
+    background: #0d0d0d;
+    flex-direction: column;
+    gap: 64px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .section-subtitle {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--titanium);
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .palette-row {
+    display: flex;
+    width: 100%; max-width: 960px;
+    height: 200px;
+  }
+
+  .swatch {
+    flex: 1;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+    position: relative;
+    cursor: none;
+    transition: flex 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .swatch:hover { flex: 2; }
+
+  .swatch-name {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .swatch-hex {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    opacity: 0.5;
+  }
+
+  .sw1 { background: #0a0a0a; }
+  .sw2 { background: #1a1a18; }
+  .sw3 { background: #3d3d38; }
+  .sw4 { background: #8a8a86; color: var(--black); }
+  .sw5 { background: #c8a96e; color: var(--black); }
+  .sw6 { background: #f4f2ee; color: var(--black); }
+
+  /* ─── TIPOGRAFÍA ─── */
+  #typography {
+    background: var(--black);
+    flex-direction: column;
+    gap: 80px;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .type-specimen {
+    width: 100%;
+    padding: 64px;
+    border: 1px solid rgba(244,242,238,0.08);
+    position: relative;
+  }
+
+  .type-tag {
+    position: absolute;
+    top: 20px; right: 24px;
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--titanium);
+    opacity: 0.5;
+  }
+
+  .type-display {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  .type-display-italic {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 72px);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    color: var(--titanium-light);
+  }
+
+  .type-mono-specimen {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    line-height: 2;
+    color: var(--titanium-light);
+  }
+
+  .type-mono-specimen span {
+    color: var(--accent);
+  }
+
+  /* ─── DISPOSITIVO ─── */
+  #device {
+    background: #080808;
+    flex-direction: column;
+    gap: 80px;
+  }
+
+  .device-showcase {
+    display: flex;
+    gap: 80px;
+    align-items: center;
+    width: 100%; max-width: 1100px;
+  }
+
+  .phone-frame {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .phone-outer {
+    width: 260px;
+    height: 520px;
+    background: linear-gradient(145deg, #2a2a28 0%, #1a1a18 40%, #222220 100%);
+    border-radius: 42px;
+    position: relative;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      inset 0 -1px 0 rgba(0,0,0,0.5),
+      0 40px 120px rgba(0,0,0,0.8),
+      0 0 0 1px rgba(255,255,255,0.05);
+  }
+
+  .phone-screen {
+    position: absolute;
+    top: 16px; left: 16px; right: 16px; bottom: 16px;
+    background: #0a0a0a;
+    border-radius: 28px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    padding: 48px 24px 36px;
+  }
+
+  .phone-time {
+    font-family: var(--font-display);
+    font-size: 64px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .phone-date {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--titanium);
+    margin-top: 8px;
+  }
+
+  .phone-status {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--titanium);
+    opacity: 0.6;
+    display: flex; justify-content: space-between;
+  }
+
+  .phone-privacy-dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .phone-logo-back {
+    position: absolute;
+    bottom: 32px; left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.12;
+  }
+
+  .phone-button {
+    position: absolute;
+    right: -3px;
+    width: 3px;
+    background: linear-gradient(to bottom, #333330, #1a1a18);
+    border-radius: 0 2px 2px 0;
+  }
+  .phone-btn-1 { top: 100px; height: 48px; }
+  .phone-btn-2 { top: 164px; height: 48px; }
+
+  .phone-button-left {
+    position: absolute;
+    left: -3px;
+    width: 3px;
+    background: linear-gradient(to bottom, #333330, #1a1a18);
+    border-radius: 2px 0 0 2px;
+  }
+  .phone-btn-3 { top: 130px; height: 72px; }
+
+  /* Kill switch — physical toggle */
+  .kill-switch {
+    position: absolute;
+    left: -3px; top: 80px;
+    width: 3px; height: 20px;
+    background: var(--accent);
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 0 8px rgba(200,169,110,0.4);
+  }
+
+  .device-details {
+    flex: 1;
+    display: flex; flex-direction: column;
+    gap: 40px;
+  }
+
+  .device-spec {
+    display: flex; flex-direction: column;
+    gap: 8px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(244,242,238,0.06);
+  }
+  .device-spec:last-child { border-bottom: none; }
+
+  .spec-label {
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .spec-value {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    color: var(--white);
+  }
+
+  .spec-desc {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--titanium);
+    line-height: 1.8;
+  }
+
+  /* ─── PACKAGING ─── */
+  #packaging {
+    background: var(--warm-white);
+    color: var(--black);
+  }
+
+  .pkg-container {
+    display: flex; gap: 80px;
+    align-items: center;
+    width: 100%; max-width: 1100px;
+  }
+
+  .box-3d {
+    position: relative;
+    flex-shrink: 0;
+    width: 280px; height: 280px;
+    transform-style: preserve-3d;
+    transform: rotateX(20deg) rotateY(-30deg);
+    animation: rotateBox 12s linear infinite;
+  }
+
+  @keyframes rotateBox {
+    from { transform: rotateX(20deg) rotateY(-30deg); }
+    to { transform: rotateX(20deg) rotateY(330deg); }
+  }
+
+  .box-face {
+    position: absolute;
+    width: 280px; height: 280px;
+    border: 1px solid rgba(0,0,0,0.1);
+    display: flex; align-items: center; justify-content: center;
+    backface-visibility: visible;
+  }
+
+  .face-front {
+    background: #0a0a0a;
+    transform: translateZ(40px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 20px;
+  }
+  .face-front svg circle { stroke: var(--white); }
+
+  .face-front .box-name {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    color: var(--white);
+  }
+
+  .face-top {
+    background: #111110;
+    transform: rotateX(90deg) translateZ(40px);
+  }
+  .face-bottom {
+    background: #080808;
+    transform: rotateX(-90deg) translateZ(240px);
+  }
+  .face-left {
+    background: #0d0d0c;
+    width: 80px;
+    transform: rotateY(-90deg) translateZ(40px);
+    left: -20px;
+  }
+  .face-right {
+    background: #0d0d0c;
+    width: 80px;
+    transform: rotateY(90deg) translateZ(240px);
+    left: 260px;
+  }
+
+  .pkg-details {
+    flex: 1;
+    display: flex; flex-direction: column; gap: 32px;
+  }
+
+  .pkg-title {
+    font-family: var(--font-display);
+    font-size: 48px;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: var(--black);
+    line-height: 1.1;
+  }
+
+  .pkg-detail {
+    display: flex; flex-direction: column; gap: 6px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .pkg-detail:last-child { border-bottom: none; }
+
+  .pkg-detail-label {
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent-dark);
+  }
+
+  .pkg-detail-value {
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--black);
+    line-height: 1.7;
+  }
+
+  .serial-number {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    letter-spacing: 0.15em;
+    color: var(--black);
+    font-weight: 400;
+  }
+
+  /* ─── SO PANTALLA ─── */
+  #os {
+    background: #080808;
+    flex-direction: column; gap: 80px;
+  }
+
+  .os-phones {
+    display: flex; gap: 32px;
+    align-items: flex-start;
+  }
+
+  .os-phone {
+    width: 220px;
+    background: linear-gradient(145deg, #252523, #181816);
+    border-radius: 36px;
+    padding: 14px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+    flex-shrink: 0;
+  }
+
+  .os-screen {
+    background: #0a0a0a;
+    border-radius: 24px;
+    overflow: hidden;
+    aspect-ratio: 9/19.5;
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+
+  /* Screen 1: Home */
+  .screen-home {
+    padding: 40px 20px 24px;
+    justify-content: space-between;
+  }
+
+  .screen-time-big {
+    font-family: var(--font-display);
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .screen-context {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--titanium);
+    margin-top: 6px;
+  }
+
+  .screen-bottom-bar {
+    display: flex; justify-content: center;
+    gap: 6px; padding-bottom: 8px;
+  }
+
+  .screen-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(244,242,238,0.15);
+  }
+  .screen-dot.active { background: var(--white); width: 18px; border-radius: 3px; }
+
+  /* Screen 2: Privacy */
+  .screen-privacy {
+    padding: 32px 16px;
+    gap: 12px;
+  }
+
+  .privacy-header {
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .privacy-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px;
+    background: rgba(244,242,238,0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(244,242,238,0.05);
+  }
+
+  .priv-name {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--white);
+  }
+
+  .priv-status {
+    font-size: 7px;
+    letter-spacing: 0.2em;
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+  .priv-on { background: rgba(200,169,110,0.15); color: var(--accent); }
+  .priv-off { background: rgba(138,138,134,0.1); color: var(--titanium); }
+  .priv-blocked { background: rgba(192,57,43,0.12); color: #e74c3c; }
+
+  /* Screen 3: App gesture */
+  .screen-gesture {
+    padding: 32px 16px;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .gesture-circle {
+    width: 80px; height: 80px;
+    border: 1px solid rgba(244,242,238,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  .gesture-inner {
+    width: 32px; height: 32px;
+    background: rgba(200,169,110,0.15);
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+  }
+
+  .gesture-label {
+    font-size: 7px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--titanium);
+    text-align: center;
+  }
+
+  .gesture-apps {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; width: 100%;
+  }
+
+  .gesture-app {
+    aspect-ratio: 1;
+    background: rgba(244,242,238,0.04);
+    border-radius: 10px;
+    border: 1px solid rgba(244,242,238,0.06);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .gesture-app-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(244,242,238,0.2);
+  }
+
+  /* ─── COMUNICACIÓN ─── */
+  #voice {
+    background: var(--black);
+    flex-direction: column;
+    gap: 48px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .voice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    width: 100%;
+  }
+
+  .voice-cell {
+    padding: 48px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+
+  .voice-cell-wrong {
+    background: rgba(192,57,43,0.06);
+    border: 1px solid rgba(192,57,43,0.12);
+  }
+  .voice-cell-right {
+    background: rgba(200,169,110,0.04);
+    border: 1px solid rgba(200,169,110,0.12);
+  }
+
+  .voice-tag {
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+  }
+  .voice-tag-wrong { color: var(--red); }
+  .voice-tag-right { color: var(--accent); }
+
+  .voice-text {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    line-height: 1.5;
+  }
+
+  .voice-cell-wrong .voice-text { color: rgba(244,242,238,0.3); text-decoration: line-through; text-decoration-color: rgba(192,57,43,0.4); }
+  .voice-cell-right .voice-text { color: var(--white); }
+
+  /* ─── MANIFESTO CTA ─── */
+  #manifesto-section {
+    background: #050505;
+    flex-direction: column; gap: 48px;
+    text-align: center;
+    min-height: 60vh;
+  }
+
+  .manifesto-number {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .manifesto-quote {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5vw, 72px);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    color: var(--white);
+    max-width: 800px;
+  }
+
+  .manifesto-attr {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--titanium);
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 2px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--titanium); }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    section { padding: 80px 24px; }
+    .device-showcase, .pkg-container { flex-direction: column; }
+    .os-phones { gap: 16px; }
+    .os-phone { width: 160px; }
+    .screen-time-big { font-size: 38px; }
+    .logos-grid { grid-template-columns: repeat(2, 1fr); }
+    .voice-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <span class="nav-logo">Kore</span>
+  <ul class="nav-links">
+    <li><a href="#logos">Logo</a></li>
+    <li><a href="#palette">Color</a></li>
+    <li><a href="#typography">Tipo</a></li>
+    <li><a href="#device">Dispositivo</a></li>
+    <li><a href="#os">SO</a></li>
+    <li><a href="#voice">Voz</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-logo-wrap">
+    <svg class="logo-svg" viewBox="0 0 120 120">
+      <circle class="logo-circle" cx="60" cy="60" r="56"/>
+    </svg>
+  </div>
+  <h1 class="hero-name">Kore</h1>
+  <p class="hero-tagline">Sistema de Identidad Visual</p>
+  <p class="hero-number">001 / 1000 — Edición Fundadores</p>
+</section>
+
+<!-- LOGO SYSTEM -->
+<section id="logos">
+  <span class="section-label">01 — Logo</span>
+  <div class="logos-grid reveal">
+    <div class="logo-cell">
+      <svg viewBox="0 0 64 64"><circle fill="none" stroke="#0a0a0a" stroke-width="1.5" cx="32" cy="32" r="28"/></svg>
+      <span class="logo-cell-label">Positivo</span>
+    </div>
+    <div class="logo-cell">
+      <svg viewBox="0 0 64 64"><circle fill="none" stroke="#f4f2ee" stroke-width="1.5" cx="32" cy="32" r="28"/></svg>
+      <span class="logo-cell-label">Negativo</span>
+    </div>
+    <div class="logo-cell">
+      <svg viewBox="0 0 64 64"><circle fill="none" stroke="#0a0a0a" stroke-width="1.5" cx="32" cy="32" r="28"/></svg>
+      <span class="logo-cell-label">Acento</span>
+    </div>
+  </div>
+  <p style="font-size:11px; letter-spacing:0.2em; color:var(--titanium); text-align:center; max-width:480px;" class="reveal">
+    Un círculo. Sin relleno. Trazo único de 1.5pt.<br>
+    La forma más perfecta que existe, la más difícil de hacer bien.
+  </p>
+</section>
+
+<!-- PALETA -->
+<section id="palette" style="flex-direction:column; gap:48px;">
+  <span class="section-label">02 — Color</span>
+  <div class="reveal" style="text-align:center;">
+    <h2 class="section-title">Paleta</h2>
+    <p class="section-subtitle">Cinco tonos + un acento que no pide permiso</p>
+  </div>
+  <div class="palette-row reveal">
+    <div class="swatch sw1"><span class="swatch-name">Kore Negro</span><span class="swatch-hex">#0A0A0A</span></div>
+    <div class="swatch sw2"><span class="swatch-name">Carbón</span><span class="swatch-hex">#1A1A18</span></div>
+    <div class="swatch sw3"><span class="swatch-name">Titanio Oscuro</span><span class="swatch-hex">#3D3D38</span></div>
+    <div class="swatch sw4"><span class="swatch-name">Titanio</span><span class="swatch-hex">#8A8A86</span></div>
+    <div class="swatch sw5"><span class="swatch-name">Ámbar</span><span class="swatch-hex">#C8A96E</span></div>
+    <div class="swatch sw6"><span class="swatch-name">Marfil</span><span class="swatch-hex">#F4F2EE</span></div>
+  </div>
+  <p style="font-size:11px; letter-spacing:0.15em; color:var(--titanium); text-align:center; max-width:560px;" class="reveal">
+    El ámbar no es dorado. Es el color del titanio envejecido bajo luz cálida.<br>Aparece con intención, nunca como decoración.
+  </p>
+</section>
+
+<!-- TIPOGRAFÍA -->
+<section id="typography" style="flex-direction:column; gap:48px; align-items:center;">
+  <span class="section-label">03 — Tipografía</span>
+  <div style="width:100%; max-width:960px;" class="reveal">
+    <div class="type-specimen">
+      <span class="type-tag">Display — Cormorant Garamond Light</span>
+      <div class="type-display">El objeto<br>que te pertenece.</div>
+      <div class="type-display-italic">Diseñado para durar.</div>
+    </div>
+  </div>
+  <div style="width:100%; max-width:960px;" class="reveal">
+    <div class="type-specimen">
+      <span class="type-tag">Técnica — DM Mono Light</span>
+      <div class="type-mono-specimen">
+        MATERIAL <span>—</span> Titanio grado 5, mecanizado en una pieza<br>
+        UNIDADES <span>—</span> 1.000 por edición<br>
+        ACTUALIZACIONES <span>—</span> Garantizadas 7 años<br>
+        TELEMETRÍA <span>—</span> Ninguna. Verificado.<br>
+        NÚMERO DE SERIE <span>—</span> 347 / 1000
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISPOSITIVO -->
+<section id="device">
+  <span class="section-label">04 — Hardware</span>
+  <div class="device-showcase reveal">
+    <div class="phone-frame">
+      <div class="phone-outer">
+        <div class="phone-screen">
+          <div>
+            <div class="phone-time">09:41</div>
+            <div class="phone-date">Miércoles, 22 Abril</div>
+          </div>
+          <div class="phone-status">
+            <span><span class="phone-privacy-dot"></span>Privacidad activa</span>
+            <span>347/1000</span>
+          </div>
+        </div>
+        <div class="phone-button phone-btn-1"></div>
+        <div class="phone-button phone-btn-2"></div>
+        <div class="phone-button-left phone-btn-3"></div>
+        <div class="kill-switch"></div>
+        <div class="phone-logo-back">
+          <svg width="40" height="40" viewBox="0 0 64 64">
+            <circle fill="none" stroke="#f4f2ee" stroke-width="1.2" cx="32" cy="32" r="28"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="device-details">
+      <div class="device-spec">
+        <span class="spec-label">Material</span>
+        <span class="spec-value">Titanio Grade 5</span>
+        <span class="spec-desc">Mecanizado en una sola pieza. Sin costuras. Sin plástico. Con el tiempo desarrolla pátina propia — cada Kore envejece distinto.</span>
+      </div>
+      <div class="device-spec">
+        <span class="spec-label">Forma</span>
+        <span class="spec-value">8.4mm de grosor</span>
+        <span class="spec-desc">Intencionalmente más grueso que el iPhone. El peso en la mano es una decisión de diseño. Indica que algo importante vive dentro.</span>
+      </div>
+      <div class="device-spec">
+        <span class="spec-label">Kill Switch físico</span>
+        <span class="spec-value">Hardware, no software</span>
+        <span class="spec-desc">El interruptor ámbar desconecta físicamente cámara, micrófono y antenas. No hay software que lo pueda ignorar. Ningún otro dispositivo del mercado tiene esto.</span>
+      </div>
+      <div class="device-spec">
+        <span class="spec-label">Identificación</span>
+        <span class="spec-value">347 / 1000</span>
+        <span class="spec-desc">Cada unidad tiene su número grabado en el interior. No eres un cliente. Eres el propietario de la unidad 347 de la primera edición Kore.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGING -->
+<section id="packaging">
+  <span class="section-label" style="color:#333;">05 — Packaging</span>
+  <div class="pkg-container reveal">
+    <div class="box-3d">
+      <div class="box-face face-front">
+        <svg width="40" height="40" viewBox="0 0 64 64"><circle fill="none" stroke="#f4f2ee" stroke-width="1.5" cx="32" cy="32" r="28"/></svg>
+        <span class="box-name">kore</span>
+      </div>
+      <div class="box-face face-top"></div>
+      <div class="box-face face-bottom"></div>
+      <div class="box-face face-left"></div>
+      <div class="box-face face-right"></div>
+    </div>
+    <div class="pkg-details">
+      <h2 class="pkg-title">El unboxing<br>es un ritual.</h2>
+      <div class="pkg-detail">
+        <span class="pkg-detail-label">Material</span>
+        <span class="pkg-detail-value">Cartón negro de una sola pieza. Sin plástico. Sin foam. El dispositivo descansa en tejido técnico negro.</span>
+      </div>
+      <div class="pkg-detail">
+        <span class="pkg-detail-label">Número de serie</span>
+        <div class="serial-number">347 / 1000</div>
+        <span class="pkg-detail-value">Grabado en metal. Dentro de la caja, debajo del dispositivo. La prueba de pertenencia.</span>
+      </div>
+      <div class="pkg-detail">
+        <span class="pkg-detail-label">Contenido</span>
+        <span class="pkg-detail-value">El dispositivo. Un cable. Una tarjeta con el manifiesto Kore en una frase. Nada más.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SO -->
+<section id="os">
+  <span class="section-label">06 — Sistema Operativo</span>
+  <div style="text-align:center;" class="reveal">
+    <h2 class="section-title">KoreOS</h2>
+    <p class="section-subtitle">La pantalla de inicio no tiene iconos</p>
+  </div>
+  <div class="os-phones reveal">
+
+    <!-- Phone 1: Home -->
+    <div class="os-phone">
+      <div class="os-screen screen-home">
+        <div>
+          <div class="screen-time-big">09:41</div>
+          <div class="screen-context">Sin notificaciones · Modo foco</div>
+        </div>
+        <div class="screen-bottom-bar">
+          <div class="screen-dot active"></div>
+          <div class="screen-dot"></div>
+          <div class="screen-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone 2: Privacy Panel -->
+    <div class="os-phone">
+      <div class="os-screen screen-privacy" style="padding:32px 16px; display:flex; flex-direction:column; gap:10px;">
+        <div class="privacy-header">Panel de privacidad</div>
+        <div class="privacy-item">
+          <span class="priv-name">Cámara</span>
+          <span class="priv-status priv-blocked">Bloqueada</span>
+        </div>
+        <div class="privacy-item">
+          <span class="priv-name">Micrófono</span>
+          <span class="priv-status priv-blocked">Bloqueado</span>
+        </div>
+        <div class="privacy-item">
+          <span class="priv-name">Ubicación</span>
+          <span class="priv-status priv-on">Maps · Activo</span>
+        </div>
+        <div class="privacy-item">
+          <span class="priv-name">Red</span>
+          <span class="priv-status priv-on">Conectado</span>
+        </div>
+        <div class="privacy-item">
+          <span class="priv-name">Telemetría</span>
+          <span class="priv-status priv-off">Ninguna</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone 3: App Gesture -->
+    <div class="os-phone">
+      <div class="os-screen screen-gesture">
+        <div class="gesture-label">Gesto de acceso</div>
+        <div class="gesture-circle">
+          <div class="gesture-inner"></div>
+        </div>
+        <div class="gesture-apps">
+          <div class="gesture-app"><div class="gesture-app-dot"></div></div>
+          <div class="gesture-app"><div class="gesture-app-dot" style="background:var(--accent); opacity:0.6;"></div></div>
+          <div class="gesture-app"><div class="gesture-app-dot"></div></div>
+          <div class="gesture-app"><div class="gesture-app-dot"></div></div>
+          <div class="gesture-app"><div class="gesture-app-dot"></div></div>
+          <div class="gesture-app"><div class="gesture-app-dot"></div></div>
+        </div>
+        <div class="gesture-label">Las apps no viven<br>en la pantalla de inicio</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- VOZ DE MARCA -->
+<section id="voice" style="flex-direction:column; gap:48px; padding: 120px 48px;">
+  <span class="section-label">07 — Voz de marca</span>
+  <div style="text-align:center;" class="reveal">
+    <h2 class="section-title">Cómo habla Kore</h2>
+    <p class="section-subtitle">Kore nunca usa superlativos. Describe con precisión.</p>
+  </div>
+  <div class="voice-grid reveal" style="width:100%; max-width:900px;">
+    <div class="voice-cell voice-cell-wrong">
+      <span class="voice-tag voice-tag-wrong">✕ Nunca</span>
+      <span class="voice-text">"El smartphone más avanzado y revolucionario del mercado."</span>
+    </div>
+    <div class="voice-cell voice-cell-right">
+      <span class="voice-tag voice-tag-right">✓ Kore</span>
+      <span class="voice-text">"Mecanizado en titanio. 1.000 unidades. Actualizaciones garantizadas 7 años."</span>
+    </div>
+    <div class="voice-cell voice-cell-wrong">
+      <span class="voice-tag voice-tag-wrong">✕ Nunca</span>
+      <span class="voice-text">"Diseñado para proteger tu privacidad con tecnología de última generación."</span>
+    </div>
+    <div class="voice-cell voice-cell-right">
+      <span class="voice-tag voice-tag-right">✓ Kore</span>
+      <span class="voice-text">"Interruptor físico. Desconexión real. Ningún software puede ignorarlo."</span>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto-section">
+  <div class="manifesto-number reveal">Kore — Manifiesto</div>
+  <blockquote class="manifesto-quote reveal">
+    "No es un smartphone más bonito.<br>Es el único que es tuyo de verdad."
+  </blockquote>
+  <p class="manifesto-attr reveal">001 / 1000 — Lista de espera abierta</p>
+</section>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
