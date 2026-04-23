@@ -433,35 +433,10 @@ function applyLang(){
   document.querySelector('title').textContent=lang==='es'?'Kore — Lista de Espera · Edición Fundadores':'Kore — Waitlist · Founders Edition';
 }
 
-// ── LOOPS CONFIG
-const LOOPS_TRANSACTIONAL_ID='cmoaaigp900x50iwc06kisz9w';
-const LOOPS_API_KEY='e75177a35f5c4814d9a24b68ee98706d';
+// ── WORKER URL — gestiona lista de espera + email de bienvenida
+const WORKER_URL='https://correos.martinez-summers-gabriel.workers.dev/';
 
-// ── SEND WELCOME EMAIL via Loops Transactional
-async function sendWelcomeEmail(email){
-  if(!LOOPS_API_KEY) return; // Sin API key no se envía — ver instrucciones abajo
-  try{
-    await fetch('https://app.loops.so/api/v1/transactional',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer '+LOOPS_API_KEY
-      },
-      body:JSON.stringify({
-        transactionalId: LOOPS_TRANSACTIONAL_ID,
-        email: email,
-        dataVariables: {
-          source: 'getkore.es'
-        }
-      })
-    });
-  } catch(err){
-    console.warn('Email transaccional no enviado:',err);
-    // No bloqueamos el flujo si el email falla
-  }
-}
-
-// ── FORM SUBMIT → LOOPS
+// ── FORM SUBMIT → CLOUDFLARE WORKER
 document.getElementById('kore-waitlist-form').addEventListener('submit',async function(e){
   e.preventDefault();
 
@@ -471,14 +446,12 @@ document.getElementById('kore-waitlist-form').addEventListener('submit',async fu
   const errorEl=document.getElementById('error-msg');
   const c=copy[lang];
 
-  // Validate
   if(!email||!email.includes('@')||!email.includes('.')){
     errorEl.style.display='block';
     errorEl.textContent=lang==='es'?'Introduce un email válido.':'Please enter a valid email.';
     return;
   }
 
-  // Rate limit check
   const lastSubmit=localStorage.getItem('kore-submit-ts');
   const now=Date.now();
   if(lastSubmit&&now-Number(lastSubmit)<60000){
@@ -487,27 +460,21 @@ document.getElementById('kore-waitlist-form').addEventListener('submit',async fu
     return;
   }
 
-  // Loading state
   btn.classList.add('loading');
   btnText.textContent=c.loading;
   errorEl.style.display='none';
 
   try{
-    // 1 — Añadir a la lista de espera
-    const body='userGroup=founders&mailingLists=&email='+encodeURIComponent(email);
-    const res=await fetch(LOOPS_ENDPOINT,{
+    const res=await fetch(WORKER_URL,{
       method:'POST',
-      headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email})
     });
 
-    if(res.ok){
+    const data=await res.json().catch(()=>({}));
+
+    if(res.ok&&data.success){
       localStorage.setItem('kore-submit-ts',now.toString());
-
-      // 2 — Enviar email de bienvenida transaccional
-      await sendWelcomeEmail(email);
-
-      // 3 — Mostrar estado de éxito
       document.getElementById('form-area').style.opacity='0';
       document.getElementById('form-area').style.transform='translateY(-8px)';
       document.getElementById('form-area').style.transition='opacity .4s ease, transform .4s ease';
@@ -518,9 +485,8 @@ document.getElementById('kore-waitlist-form').addEventListener('submit',async fu
         s.style.animation='fu .7s ease both';
       },400);
     } else {
-      const data=await res.json().catch(()=>({}));
       errorEl.style.display='block';
-      errorEl.textContent=data.message||c.error;
+      errorEl.textContent=data.error||c.error;
       btn.classList.remove('loading');
       btnText.textContent=c.btn;
     }
