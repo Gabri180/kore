@@ -433,6 +433,34 @@ function applyLang(){
   document.querySelector('title').textContent=lang==='es'?'Kore — Lista de Espera · Edición Fundadores':'Kore — Waitlist · Founders Edition';
 }
 
+// ── LOOPS CONFIG
+const LOOPS_TRANSACTIONAL_ID='cmoaaigp900x50iwc06kisz9w';
+const LOOPS_API_KEY='e75177a35f5c4814d9a24b68ee98706d'; // Añade aquí tu API key de Loops (Settings → API Keys)
+
+// ── SEND WELCOME EMAIL via Loops Transactional
+async function sendWelcomeEmail(email){
+  if(!LOOPS_API_KEY) return; // Sin API key no se envía — ver instrucciones abajo
+  try{
+    await fetch('https://app.loops.so/api/v1/transactional',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+LOOPS_API_KEY
+      },
+      body:JSON.stringify({
+        transactionalId: LOOPS_TRANSACTIONAL_ID,
+        email: email,
+        dataVariables: {
+          source: 'getkore.es'
+        }
+      })
+    });
+  } catch(err){
+    console.warn('Email transaccional no enviado:',err);
+    // No bloqueamos el flujo si el email falla
+  }
+}
+
 // ── FORM SUBMIT → LOOPS
 document.getElementById('kore-waitlist-form').addEventListener('submit',async function(e){
   e.preventDefault();
@@ -465,6 +493,7 @@ document.getElementById('kore-waitlist-form').addEventListener('submit',async fu
   errorEl.style.display='none';
 
   try{
+    // 1 — Añadir a la lista de espera
     const body='userGroup=founders&mailingLists=&email='+encodeURIComponent(email);
     const res=await fetch(LOOPS_ENDPOINT,{
       method:'POST',
@@ -474,7 +503,11 @@ document.getElementById('kore-waitlist-form').addEventListener('submit',async fu
 
     if(res.ok){
       localStorage.setItem('kore-submit-ts',now.toString());
-      // Show success
+
+      // 2 — Enviar email de bienvenida transaccional
+      await sendWelcomeEmail(email);
+
+      // 3 — Mostrar estado de éxito
       document.getElementById('form-area').style.opacity='0';
       document.getElementById('form-area').style.transform='translateY(-8px)';
       document.getElementById('form-area').style.transition='opacity .4s ease, transform .4s ease';
@@ -492,7 +525,6 @@ document.getElementById('kore-waitlist-form').addEventListener('submit',async fu
       btnText.textContent=c.btn;
     }
   } catch(err){
-    // Cloudflare / network error
     errorEl.style.display='block';
     errorEl.textContent=c.error;
     btn.classList.remove('loading');
