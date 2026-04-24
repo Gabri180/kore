@@ -3,361 +3,323 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kore — Lista de Espera · Edición Fundadores</title>
-<meta name="description" content="1.000 unidades. Edición Fundadores. El smartphone que es tuyo de verdad.">
+<title>Kore — El smartphone que es tuyo de verdad</title>
+<meta name="description" content="1.000 unidades. Edición Fundadores. Titanio. Sin telemetría. 7 años garantizados.">
 <meta property="og:title" content="Kore — Edición Fundadores">
 <meta property="og:description" content="1.000 unidades. El smartphone que es tuyo de verdad.">
+<meta property="og:url" content="https://getkore.es">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --black:#080808;
-  --off:#0f0f0d;
-  --dark:#181816;
-  --mid:#2a2a28;
-  --ti:#888884;
-  --ti-l:#b0ada8;
-  --white:#f0ece4;
+  --black:#070707;
+  --off:#0d0d0b;
+  --dark:#161614;
+  --mid:#252523;
+  --ti:#86837e;
+  --ti-l:#aeaba5;
+  --white:#f2ede5;
   --amber:#c8a96e;
   --amber-d:#9a7d4a;
-  --green:#4a9a6a;
-  --red:#b03020;
-  --serif:'Cormorant Garamond',Georgia,serif;
-  --mono:'DM Mono',monospace;
+  --serif:"Cormorant Garamond",Georgia,serif;
+  --mono:"DM Mono",monospace;
   --ease:cubic-bezier(.4,0,.2,1);
 }
-
-html,body{min-height:100%;margin:0}
+html{scroll-behavior:smooth}
 body{
-  background:var(--black);
-  color:var(--white);
-  font-family:var(--mono);
-  font-weight:300;
-  cursor:none;
-  overflow-x:hidden;
+  background:var(--black);color:var(--white);
+  font-family:var(--mono);font-weight:300;
+  cursor:none;overflow-x:hidden;
 }
 
 /* CURSOR */
-#cur{position:fixed;width:6px;height:6px;background:var(--white);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
-#cur2{position:fixed;width:28px;height:28px;border:1px solid rgba(240,236,228,.18);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+#cur{position:fixed;width:5px;height:5px;background:var(--white);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s}
+#cur2{position:fixed;width:26px;height:26px;border:1px solid rgba(242,237,229,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
 
 /* GRAIN */
-.grain{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.25;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")}
-.glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 55% 45% at 50% 55%,rgba(200,169,110,.055),transparent 60%);transition:opacity .8s}
+body::before{
+  content:"";position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.5;
+}
 
-/* TOPBAR */
-.topbar{
-  position:fixed;top:0;left:0;right:0;z-index:10;
-  padding:24px 48px;
-  display:flex;justify-content:space-between;align-items:center;
+/* GLOW */
+.bg-glow{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 60%,rgba(200,169,110,.05),transparent 65%);
+  transition:background 1.2s var(--ease);
 }
-.tb-logo{
-  font-family:var(--serif);font-size:20px;font-weight:300;
-  letter-spacing:.4em;color:var(--white);text-decoration:none;
-  opacity:.6;transition:opacity .2s;
-}
-.tb-logo:hover{opacity:1}
-.tb-lang{
-  font-size:9px;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--ti);background:none;border:none;cursor:none;
-  transition:color .2s;
-}
-.tb-lang:hover{color:var(--amber)}
 
-/* ══ WAITLIST SCREEN ══ */
-#screen-waitlist{
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:52px;padding:0 52px;
+  display:flex;align-items:center;justify-content:space-between;
+  backdrop-filter:blur(24px) saturate(1.2);
+  background:rgba(7,7,7,.78);
+  border-bottom:1px solid rgba(242,237,229,.055);
+  transition:background .3s;
+}
+.nl{font-family:var(--serif);font-size:18px;font-weight:300;letter-spacing:.4em;color:var(--white);text-decoration:none;opacity:.75;transition:opacity .2s}
+.nl:hover{opacity:1}
+.nr{display:flex;align-items:center;gap:20px}
+.lang-btn{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--ti);background:none;border:none;cursor:none;transition:color .2s;padding:4px 0;border-bottom:1px solid transparent}
+.lang-btn:hover,.lang-btn.active{color:var(--amber);border-bottom-color:var(--amber)}
+
+/* ─── HERO ─── */
+#hero{
+  position:relative;z-index:1;
   min-height:100vh;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  padding:100px 24px 60px;
-  position:relative;z-index:1;
   text-align:center;
+  padding:80px 24px 60px;
 }
 
-/* STATS BAR */
-.stats-bar{
-  display:flex;align-items:center;gap:0;
-  margin-bottom:56px;
-  border:1px solid rgba(240,236,228,.08);
-  animation:fu 1s .2s both;
+/* AMBER TOP LINE */
+.amber-line{
+  position:absolute;top:0;left:0;right:0;
+  height:2px;background:var(--amber);
+  transform:scaleX(0);transform-origin:left;
+  animation:lineIn 1.8s var(--ease) .4s forwards;
 }
-.sb-item{
-  padding:10px 24px;
-  font-size:9px;letter-spacing:.3em;text-transform:uppercase;
+@keyframes lineIn{to{transform:scaleX(1)}}
+
+/* STATS STRIP */
+.stats-strip{
+  display:flex;border:1px solid rgba(242,237,229,.08);
+  margin-bottom:64px;
+  animation:fu 1s var(--ease) .15s both;
+}
+.ss-item{
+  padding:11px 28px;
+  font-size:9px;letter-spacing:.28em;text-transform:uppercase;
   color:var(--ti);
-  border-right:1px solid rgba(240,236,228,.08);
+  border-right:1px solid rgba(242,237,229,.08);
+  display:flex;align-items:center;gap:10px;
 }
-.sb-item:last-child{border-right:none}
-.sb-item span{color:var(--white);margin-right:6px}
+.ss-item:last-child{border-right:none}
+.ss-num{font-family:var(--serif);font-size:18px;font-weight:300;color:var(--white)}
 
-/* LOGO */
-.logo-mark{margin-bottom:32px;animation:fu 1s .3s both}
-.logo-circle{
-  fill:none;stroke:var(--white);stroke-width:.8;
-  stroke-dasharray:220;stroke-dashoffset:220;
-  animation:draw 2s var(--ease) .6s forwards;
-}
-@keyframes draw{to{stroke-dashoffset:0}}
+/* LOGO CIRCLE */
+.logo-wrap{margin-bottom:36px;animation:fu 1s var(--ease) .25s both}
+.lc{fill:none;stroke:rgba(242,237,229,.55);stroke-width:.7;stroke-dasharray:207;stroke-dashoffset:207;animation:drawC 2.4s var(--ease) .7s forwards}
+@keyframes drawC{to{stroke-dashoffset:0}}
 
-/* TITLE */
-.wl-title{
+/* HEADLINE */
+.hero-name{
   font-family:var(--serif);
-  font-size:clamp(56px,9vw,120px);
-  font-weight:300;letter-spacing:.2em;
-  line-height:1;color:var(--white);
-  margin-bottom:16px;
-  animation:fu 1s .4s both;
+  font-size:clamp(72px,11vw,148px);
+  font-weight:300;letter-spacing:.22em;
+  line-height:.95;color:var(--white);
+  animation:fu 1s var(--ease) .35s both;
+  margin-bottom:18px;
 }
-.wl-sub{
+.hero-sub{
   font-family:var(--serif);
-  font-size:clamp(15px,1.8vw,19px);
+  font-size:clamp(15px,1.9vw,21px);
   font-style:italic;font-weight:300;
   color:var(--ti-l);letter-spacing:.04em;
-  margin-bottom:12px;
-  animation:fu 1s .55s both;
+  animation:fu 1s var(--ease) .5s both;
+  margin-bottom:10px;
 }
-.wl-edition{
-  font-size:9px;letter-spacing:.45em;text-transform:uppercase;
+.hero-badge{
+  font-size:9px;letter-spacing:.42em;text-transform:uppercase;
   color:var(--amber);
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  margin-bottom:56px;
-  animation:fu 1s .65s both;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  animation:fu 1s var(--ease) .62s both;
+  margin-bottom:52px;
 }
-.ed-dot{width:5px;height:5px;border-radius:50%;background:var(--amber);animation:blink 2.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.badge-pulse{width:5px;height:5px;border-radius:50%;background:var(--amber);animation:pulse 2.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(.7)}}
 
 /* FORM */
-.form-wrap{width:100%;max-width:500px;animation:fu 1s .75s both}
-.kore-form{display:flex;gap:0;width:100%}
-.kore-input{
-  flex:1;background:rgba(240,236,228,.04);
-  border:1px solid rgba(240,236,228,.12);border-right:none;
-  color:var(--white);font-family:var(--mono);font-size:12px;
-  letter-spacing:.15em;padding:18px 20px;outline:none;
-  transition:border-color .2s;-webkit-appearance:none;
+.form-outer{width:100%;max-width:480px;animation:fu 1s var(--ease) .75s both}
+.form-row{display:flex}
+.email-inp{
+  flex:1;
+  background:rgba(242,237,229,.038);
+  border:1px solid rgba(242,237,229,.11);
+  border-right:none;
+  color:var(--white);
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  padding:17px 20px;outline:none;
+  transition:border-color .2s,background .2s;
+  -webkit-appearance:none;
 }
-.kore-input::placeholder{color:var(--ti)}
-.kore-input:focus{border-color:rgba(200,169,110,.45)}
-.kore-btn{
+.email-inp::placeholder{color:var(--ti)}
+.email-inp:focus{border-color:rgba(200,169,110,.4);background:rgba(242,237,229,.055)}
+.res-btn{
   background:var(--amber);border:1px solid var(--amber);
-  color:var(--black);font-family:var(--mono);font-size:10px;
-  letter-spacing:.28em;text-transform:uppercase;
-  padding:18px 28px;cursor:none;white-space:nowrap;
-  transition:background .2s,border-color .2s;flex-shrink:0;
+  color:var(--black);font-family:var(--mono);
+  font-size:10px;letter-spacing:.26em;text-transform:uppercase;
+  padding:17px 26px;cursor:none;flex-shrink:0;
+  transition:background .2s,border-color .2s,color .2s;
+  white-space:nowrap;
 }
-.kore-btn:hover{background:var(--white);border-color:var(--white)}
-.kore-btn.loading{
-  background:rgba(200,169,110,.3);border-color:rgba(200,169,110,.3);
-  color:var(--amber);pointer-events:none;
-}
-.kore-btn.loading::after{
-  content:'';display:inline-block;width:10px;height:10px;
-  border:1px solid var(--amber);border-top-color:transparent;
-  border-radius:50%;animation:spin .8s linear infinite;
-  margin-left:8px;vertical-align:middle;
-}
+.res-btn:hover{background:var(--white);border-color:var(--white)}
+.res-btn.ld{background:rgba(200,169,110,.25);border-color:rgba(200,169,110,.25);color:var(--amber);pointer-events:none}
+.res-btn.ld::after{content:"";display:inline-block;width:9px;height:9px;border:1px solid var(--amber);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;margin-left:8px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
+.ferr{display:none;font-size:10px;letter-spacing:.12em;color:#b03020;margin-top:9px}
+.fnote{margin-top:13px;font-size:9px;letter-spacing:.2em;color:var(--ti);opacity:.38}
 
-.form-error{
-  display:none;font-size:10px;letter-spacing:.15em;
-  color:var(--red);margin-top:10px;
+/* MANI LINK */
+.mani-lnk{
+  margin-top:44px;
+  font-size:9px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--ti);text-decoration:none;
+  display:inline-flex;align-items:center;gap:9px;
+  transition:color .2s;
+  animation:fu 1s var(--ease) .9s both;
 }
-.form-note{
-  margin-top:14px;font-size:9px;letter-spacing:.22em;
-  color:var(--ti);opacity:.4;
-}
+.mani-lnk:hover{color:var(--amber)}
+.mani-lnk .arr{transition:transform .25s}
+.mani-lnk:hover .arr{transform:translateX(4px)}
 
-/* MANIFESTO LINK */
-.mani-link{
-  margin-top:48px;font-size:10px;letter-spacing:.25em;
-  text-transform:uppercase;color:var(--ti);text-decoration:none;
-  display:inline-flex;align-items:center;gap:10px;
-  transition:color .2s;animation:fu 1s .9s both;
+/* SCROLL HINT */
+.scroll-hint{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  font-size:8px;letter-spacing:.38em;text-transform:uppercase;
+  color:rgba(242,237,229,.22);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  animation:fu 1s var(--ease) 1.2s both;
+  pointer-events:none;
 }
-.mani-link:hover{color:var(--amber)}
-.mani-link::after{content:'→';transition:transform .2s}
-.mani-link:hover::after{transform:translateX(4px)}
+.sh-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(242,237,229,.3),transparent);animation:shLine 2s ease infinite}
+@keyframes shLine{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
-/* ══ SUCCESS SCREEN ══ */
-#screen-success{
+/* ─── SUCCESS SCREEN ─── */
+#s-success{
   display:none;
+  position:relative;z-index:1;
   min-height:100vh;
   flex-direction:column;
   align-items:center;
   padding:80px 24px 60px;
-  position:relative;z-index:1;
 }
 
-/* SUCCESS TOP */
-.success-topbar{
+/* TOPBAR */
+.su-top{
+  width:100%;max-width:620px;
   display:flex;justify-content:space-between;align-items:center;
-  width:100%;max-width:600px;
-  margin-bottom:48px;
-  font-size:9px;letter-spacing:.35em;text-transform:uppercase;
-  color:var(--ti);
+  font-size:8px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--ti);margin-bottom:40px;
+  padding-bottom:16px;
+  border-bottom:1px solid rgba(242,237,229,.06);
 }
 
-/* RESERVE NUMBER */
-.reserve-block{
-  width:100%;max-width:600px;
-  border:1px solid rgba(240,236,228,.1);
+/* RESERVE BOX */
+.res-box{
+  width:100%;max-width:620px;
   background:var(--off);
-  padding:48px;
+  border:1px solid rgba(242,237,229,.09);
+  border-top:2px solid var(--amber);
+  padding:48px 40px;
   margin-bottom:40px;
   text-align:center;
 }
-.rb-label{
-  font-size:9px;letter-spacing:.45em;text-transform:uppercase;
-  color:var(--ti);margin-bottom:20px;
-}
-.rb-number{
-  font-family:var(--serif);
-  font-size:clamp(64px,14vw,108px);
-  font-weight:300;color:var(--white);
-  line-height:1;letter-spacing:-.02em;
-}
-.rb-denom{
-  font-family:var(--serif);
-  font-size:clamp(24px,4vw,36px);
-  font-weight:300;color:var(--ti);
-}
-.rb-remaining{
-  margin-top:16px;
-  font-size:10px;letter-spacing:.25em;
-  color:var(--amber);
-}
+.rb-lbl{font-size:8px;letter-spacing:.45em;text-transform:uppercase;color:var(--ti);margin-bottom:16px}
+.rb-n{font-family:var(--serif);font-size:clamp(72px,15vw,112px);font-weight:300;color:var(--white);line-height:1;letter-spacing:-.02em}
+.rb-d{font-family:var(--serif);font-size:clamp(26px,4.5vw,38px);font-weight:300;color:var(--ti)}
+.rb-rem{margin-top:14px;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--amber)}
 
-/* SUCCESS BODY */
-.success-body{width:100%;max-width:600px}
-.sb-headline{
-  font-family:var(--serif);
-  font-size:clamp(28px,4vw,44px);
-  font-weight:300;color:var(--white);
-  margin-bottom:16px;line-height:1.15;
-}
-.sb-text{
-  font-size:12px;letter-spacing:.1em;color:var(--ti-l);
-  line-height:2;margin-bottom:8px;
-}
-.sb-text strong{color:var(--white)}
-.sb-text .amber{color:var(--amber)}
+/* SUCCESS COPY */
+.su-copy{width:100%;max-width:620px}
+.su-h{font-family:var(--serif);font-size:clamp(30px,4.5vw,46px);font-weight:300;color:var(--white);line-height:1.1;margin-bottom:14px}
+.su-p{font-size:12px;letter-spacing:.1em;color:var(--ti-l);line-height:2.1;margin-bottom:7px}
+.su-p strong{color:var(--white)}
+.su-p .am{color:var(--amber)}
 
-/* QUOTE */
-.success-quote{
-  width:100%;max-width:600px;
+/* BLOCKQUOTE */
+.su-quote{
+  width:100%;max-width:620px;
   border-left:2px solid var(--amber);
-  padding:8px 0 8px 24px;
-  margin:28px 0;
+  padding:8px 0 8px 22px;
+  margin:24px 0;
 }
-.sq-text{
-  font-family:var(--serif);font-size:16px;font-style:italic;
-  color:var(--amber);line-height:1.6;
-}
+.sq{font-family:var(--serif);font-size:15px;font-style:italic;color:var(--amber);line-height:1.65}
 
 /* STEPS */
-.success-steps{
-  width:100%;max-width:600px;
-  display:flex;flex-direction:column;gap:0;
-  margin:28px 0;
+.su-steps{width:100%;max-width:620px;margin:20px 0}
+.s-step{
+  display:flex;gap:20px;padding:18px 0;
+  border-bottom:1px solid rgba(242,237,229,.055);
 }
-.step{
-  display:flex;gap:20px;padding:20px 0;
-  border-bottom:1px solid rgba(240,236,228,.06);
-}
-.step:last-child{border-bottom:none}
-.step-num{
-  font-family:var(--mono);font-size:9px;
-  letter-spacing:.3em;color:var(--amber);
-  flex-shrink:0;padding-top:2px;width:24px;
-}
-.step-body{display:flex;flex-direction:column;gap:4px}
-.step-title{
-  font-family:var(--serif);font-size:17px;font-weight:300;
-  color:var(--white);
-}
-.step-desc{font-size:11px;letter-spacing:.1em;color:var(--ti);line-height:1.9}
+.s-step:last-child{border-bottom:none}
+.s-num{font-size:9px;letter-spacing:.28em;color:var(--amber);flex-shrink:0;width:22px;padding-top:3px}
+.s-title{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--white);margin-bottom:4px}
+.s-desc{font-size:10px;letter-spacing:.1em;color:var(--ti);line-height:1.9}
 
-/* SPECS GRID */
-.specs-grid{
-  width:100%;max-width:600px;
+/* SPECS */
+.su-specs{
+  width:100%;max-width:620px;
   display:grid;grid-template-columns:1fr 1fr;
-  border:1px solid rgba(240,236,228,.08);
-  margin:28px 0;
+  border:1px solid rgba(242,237,229,.08);
+  margin:20px 0;
 }
-.spec{
-  padding:20px 24px;
-  border-right:1px solid rgba(240,236,228,.08);
-  border-bottom:1px solid rgba(240,236,228,.08);
-}
-.spec:nth-child(2n){border-right:none}
-.spec:nth-child(3),.spec:nth-child(4){border-bottom:none}
-.spec-label{
-  font-size:8px;letter-spacing:.35em;text-transform:uppercase;
-  color:var(--ti);margin-bottom:6px;
-}
-.spec-val{font-family:var(--serif);font-size:17px;font-weight:300;color:var(--white)}
+.sp{padding:18px 22px;border-right:1px solid rgba(242,237,229,.08);border-bottom:1px solid rgba(242,237,229,.08)}
+.sp:nth-child(2n){border-right:none}
+.sp:nth-child(3),.sp:nth-child(4){border-bottom:none}
+.sp-l{font-size:7px;letter-spacing:.38em;text-transform:uppercase;color:var(--ti);margin-bottom:5px}
+.sp-v{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--white)}
 
-/* SUCCESS CTA */
-.success-cta{
-  width:100%;max-width:600px;
-  display:flex;gap:8px;margin:8px 0 40px;
+/* CTAS */
+.su-ctas{
+  width:100%;max-width:620px;
+  display:flex;gap:8px;margin:16px 0 40px;
 }
-.cta-outline{
-  flex:1;padding:16px;
-  border:1px solid rgba(240,236,228,.15);
+.cta-o{
+  flex:1;padding:15px;
+  border:1px solid rgba(242,237,229,.14);
   background:transparent;color:var(--white);
-  font-family:var(--mono);font-size:10px;
-  letter-spacing:.25em;text-transform:uppercase;
+  font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
   cursor:none;transition:.2s;text-decoration:none;
   display:flex;align-items:center;justify-content:center;
 }
-.cta-outline:hover{border-color:var(--white)}
-.cta-amber{
-  flex:1;padding:16px;
+.cta-o:hover{border-color:var(--white)}
+.cta-a{
+  flex:1;padding:15px;
   background:var(--amber);border:1px solid var(--amber);
   color:var(--black);
-  font-family:var(--mono);font-size:10px;
-  letter-spacing:.25em;text-transform:uppercase;
+  font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
   cursor:none;transition:.2s;text-decoration:none;
   display:flex;align-items:center;justify-content:center;
 }
-.cta-amber:hover{background:var(--white);border-color:var(--white)}
+.cta-a:hover{background:var(--white);border-color:var(--white)}
 
 /* FOOTER */
 footer{
   position:relative;z-index:1;
-  padding:32px 48px;
-  border-top:1px solid rgba(240,236,228,.05);
+  padding:28px 52px;
+  border-top:1px solid rgba(242,237,229,.05);
   display:flex;justify-content:space-between;align-items:center;
 }
-.ft-logo{font-family:var(--serif);font-size:16px;font-weight:300;letter-spacing:.35em;color:var(--ti)}
-.ft-copy{font-size:9px;letter-spacing:.2em;color:var(--ti);opacity:.3}
+.ft-logo{font-family:var(--serif);font-size:16px;font-weight:300;letter-spacing:.38em;color:var(--ti)}
+.ft-copy{font-size:9px;letter-spacing:.18em;color:var(--ti);opacity:.28}
 
-/* ANIMS */
-@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-.su-anim{animation:fu .7s var(--ease) both}
-.su-d1{animation-delay:.05s}
-.su-d2{animation-delay:.15s}
-.su-d3{animation-delay:.28s}
-.su-d4{animation-delay:.42s}
-.su-d5{animation-delay:.56s}
-.su-d6{animation-delay:.7s}
+/* ANIM */
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.aa{animation:fu .75s var(--ease) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.16s}.d3{animation-delay:.28s}
+.d4{animation-delay:.42s}.d5{animation-delay:.58s}.d6{animation-delay:.72s}
 
 /* MOBILE */
-@media(max-width:600px){
-  .topbar{padding:16px 20px}
-  .stats-bar{flex-wrap:wrap}
-  .sb-item{border-right:none;border-bottom:1px solid rgba(240,236,228,.08);padding:8px 16px}
-  #screen-waitlist,#screen-success{padding:80px 16px 48px}
-  .kore-form{flex-direction:column}
-  .kore-input{border-right:1px solid rgba(240,236,228,.12);border-bottom:none}
-  .kore-btn{width:100%;padding:16px}
-  .specs-grid{grid-template-columns:1fr}
-  .spec{border-right:none}
-  .spec:nth-child(3){border-bottom:1px solid rgba(240,236,228,.08)}
-  .success-cta{flex-direction:column}
-  footer{flex-direction:column;gap:12px;text-align:center}
+@media(max-width:640px){
+  nav{padding:0 20px}
+  #hero,#s-success{padding:72px 18px 48px}
+  .stats-strip{flex-direction:column}
+  .ss-item{border-right:none;border-bottom:1px solid rgba(242,237,229,.08);padding:10px 20px}
+  .ss-item:last-child{border-bottom:none}
+  .form-row{flex-direction:column}
+  .email-inp{border-right:1px solid rgba(242,237,229,.11);border-bottom:none}
+  .res-btn{width:100%;padding:16px}
+  .su-specs{grid-template-columns:1fr}
+  .sp{border-right:none}
+  .sp:nth-child(3){border-bottom:1px solid rgba(242,237,229,.08)}
+  .su-ctas{flex-direction:column}
+  footer{flex-direction:column;gap:10px;text-align:center;padding:24px}
 }
 </style>
 </head>
@@ -365,121 +327,122 @@ footer{
 
 <div id="cur"></div>
 <div id="cur2"></div>
-<div class="grain"></div>
-<div class="glow" id="glow"></div>
+<div class="bg-glow" id="bg-glow"></div>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <a href="/" class="tb-logo">Kore</a>
-  <button class="tb-lang" onclick="toggleLang()" id="lang-btn">EN</button>
-</div>
+<nav>
+  <a href="/" class="nl">Kore</a>
+  <div class="nr">
+    <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</nav>
 
-<!-- ══ WAITLIST SCREEN ══ -->
-<section id="screen-waitlist">
+<!-- HERO -->
+<section id="hero">
+  <div class="amber-line"></div>
 
-  <div class="stats-bar">
-    <div class="sb-item"><span>1.000</span> <span id="t-stat1">Unidades</span></div>
-    <div class="sb-item"><span>7</span> <span id="t-stat2">Años garantizados</span></div>
-    <div class="sb-item"><span>0</span> <span id="t-stat3">Datos enviados</span></div>
+  <div class="stats-strip aa">
+    <div class="ss-item"><span class="ss-num">1.000</span><span id="t-s1">Unidades</span></div>
+    <div class="ss-item"><span class="ss-num">7</span><span id="t-s2">Años garantizados</span></div>
+    <div class="ss-item"><span class="ss-num">0</span><span id="t-s3">Datos enviados</span></div>
   </div>
 
-  <div class="logo-mark">
-    <svg width="72" height="72" viewBox="0 0 72 72">
-      <circle class="logo-circle" cx="36" cy="36" r="33"/>
+  <div class="logo-wrap">
+    <svg width="68" height="68" viewBox="0 0 68 68">
+      <circle class="lc" cx="34" cy="34" r="31"/>
     </svg>
   </div>
 
-  <h1 class="wl-title" id="t-title">Kore</h1>
-  <p class="wl-sub" id="t-sub">El smartphone que es tuyo de verdad.</p>
-  <div class="wl-edition">
-    <div class="ed-dot"></div>
-    <span id="t-edition">Edición Fundadores · Lista de espera abierta</span>
+  <h1 class="hero-name">Kore</h1>
+  <p class="hero-sub" id="t-sub">El smartphone que es tuyo de verdad.</p>
+  <div class="hero-badge">
+    <div class="badge-pulse"></div>
+    <span id="t-badge">Edición Fundadores · Lista de espera abierta</span>
   </div>
 
-  <div class="form-wrap">
-    <form id="wl-form" novalidate onsubmit="return false">
-      <div class="kore-form">
-        <input class="kore-input" type="email" id="email-input"
-          placeholder="tu@email.com" autocomplete="email" required>
-        <button class="kore-btn" id="submit-btn" onclick="submitForm()">
-          <span id="btn-text">Reservar</span>
-        </button>
-      </div>
-    </form>
-    <div class="form-error" id="form-error"></div>
-    <p class="form-note" id="t-note">Sin spam · Sin compromisos · Solo Kore</p>
+  <div class="form-outer">
+    <div class="form-row">
+      <input class="email-inp" type="email" id="email-inp"
+        placeholder="tu@email.com" autocomplete="email"
+        onkeydown="if(event.key==='Enter')doSubmit()">
+      <button class="res-btn" id="res-btn" onclick="doSubmit()">
+        <span id="btn-txt">Reservar</span>
+      </button>
+    </div>
+    <div class="ferr" id="ferr"></div>
+    <p class="fnote" id="t-note">Sin spam · Sin compromisos · Solo Kore</p>
   </div>
 
-  <a href="/manifiesto" class="mani-link" id="t-mani">Leer el manifiesto</a>
+  <a href="/manifiesto" class="mani-lnk" id="t-mani">
+    Leer el manifiesto <span class="arr">→</span>
+  </a>
 
+  <div class="scroll-hint">
+    <div class="sh-line"></div>
+    <span id="t-scroll">Descubrir</span>
+  </div>
 </section>
 
-<!-- ══ SUCCESS SCREEN ══ -->
-<section id="screen-success">
+<!-- SUCCESS -->
+<section id="s-success">
 
-  <div class="success-topbar su-anim">
-    <span id="t-su-date">—</span>
-    <span id="t-su-edition">Edición Fundadores · getkore.es</span>
+  <div class="su-top aa">
+    <span id="su-date">—</span>
+    <span id="t-su-ed">Edición Fundadores · getkore.es</span>
   </div>
 
-  <!-- RESERVE NUMBER -->
-  <div class="reserve-block su-anim su-d1">
-    <div class="rb-label" id="t-rb-label">Tu número de reserva</div>
+  <div class="res-box aa d1">
+    <div class="rb-lbl" id="t-rb-lbl">Tu número de reserva</div>
     <div>
-      <span class="rb-number" id="su-number">—</span><span class="rb-denom"> / 1000</span>
+      <span class="rb-n" id="su-num">—</span><span class="rb-d"> / 1000</span>
     </div>
-    <div class="rb-remaining" id="su-remaining">—</div>
+    <div class="rb-rem" id="su-rem">—</div>
   </div>
 
-  <!-- HEADLINE -->
-  <div class="success-body">
-    <h2 class="sb-headline su-anim su-d2" id="t-su-headline">Estás en la lista.</h2>
-    <p class="sb-text su-anim su-d2" id="t-su-text1">—</p>
-    <p class="sb-text su-anim su-d2" id="t-su-text2">—</p>
+  <div class="su-copy">
+    <h2 class="su-h aa d2" id="t-su-h">Estás en la lista.</h2>
+    <p class="su-p aa d2" id="su-p1">—</p>
+    <p class="su-p aa d2" id="su-p2">—</p>
   </div>
 
-  <!-- QUOTE -->
-  <div class="success-quote su-anim su-d3">
-    <p class="sq-text" id="t-su-quote">"El smartphone que llevas encima debería ser el objeto más tuyo del mundo. Estamos construyendo exactamente eso."</p>
+  <div class="su-quote aa d3">
+    <p class="sq" id="t-sq">"El smartphone que llevas encima debería ser el objeto más tuyo del mundo. Estamos construyendo exactamente eso."</p>
   </div>
 
-  <!-- STEPS -->
-  <div class="success-steps su-anim su-d3">
-    <div class="step">
-      <span class="step-num">01</span>
-      <div class="step-body">
-        <div class="step-title" id="t-st1-title">Recibes actualizaciones</div>
-        <div class="step-desc" id="t-st1-desc">Te contaremos el avance del proyecto, las especificaciones técnicas y la fecha de pre-order antes que nadie.</div>
+  <div class="su-steps aa d3">
+    <div class="s-step">
+      <span class="s-num">01</span>
+      <div>
+        <div class="s-title" id="t-st1">Recibes actualizaciones</div>
+        <div class="s-desc" id="t-sd1">Te contaremos el avance del proyecto, las especificaciones técnicas y la fecha de pre-order antes que nadie.</div>
       </div>
     </div>
-    <div class="step">
-      <span class="step-num">02</span>
-      <div class="step-body">
-        <div class="step-title" id="t-st2-title">Pre-order prioritario</div>
-        <div class="step-desc" id="t-st2-desc">Los fundadores tienen acceso a pre-order 72h antes de apertura pública. Tu número de reserva determina el orden.</div>
+    <div class="s-step">
+      <span class="s-num">02</span>
+      <div>
+        <div class="s-title" id="t-st2">Pre-order prioritario</div>
+        <div class="s-desc" id="t-sd2">Los fundadores tienen acceso a pre-order 72h antes de apertura pública. Tu número de reserva determina el orden.</div>
       </div>
     </div>
-    <div class="step">
-      <span class="step-num">03</span>
-      <div class="step-body">
-        <div class="step-title" id="t-st3-title">Entrega en 2027</div>
-        <div class="step-desc" id="t-st3-desc">Las unidades empezarán a enviarse en 2027. Recibirás tu número de serie grabado antes de que llegue el dispositivo.</div>
+    <div class="s-step">
+      <span class="s-num">03</span>
+      <div>
+        <div class="s-title" id="t-st3">Entrega en 2027</div>
+        <div class="s-desc" id="t-sd3">Las unidades empezarán a enviarse en 2027. Recibirás tu número de serie grabado antes de que llegue el dispositivo.</div>
       </div>
     </div>
   </div>
 
-  <!-- SPECS -->
-  <div class="specs-grid su-anim su-d4">
-    <div class="spec"><div class="spec-label" id="t-sp1-l">Material</div><div class="spec-val">Titanio Grade 5</div></div>
-    <div class="spec"><div class="spec-label" id="t-sp2-l">Privacidad</div><div class="spec-val" id="t-sp2-v">Cero datos enviados</div></div>
-    <div class="spec"><div class="spec-label" id="t-sp3-l">Seguridad</div><div class="spec-val">Kill switch físico</div></div>
-    <div class="spec"><div class="spec-label" id="t-sp4-l">Precio</div><div class="spec-val">Desde €2.499</div></div>
+  <div class="su-specs aa d4">
+    <div class="sp"><div class="sp-l" id="t-sp1">Material</div><div class="sp-v">Titanio Grade 5</div></div>
+    <div class="sp"><div class="sp-l" id="t-sp2">Privacidad</div><div class="sp-v" id="t-sp2v">Cero datos enviados</div></div>
+    <div class="sp"><div class="sp-l" id="t-sp3">Seguridad</div><div class="sp-v">Kill switch físico</div></div>
+    <div class="sp"><div class="sp-l" id="t-sp4">Precio</div><div class="sp-v">Desde €2.499</div></div>
   </div>
 
-  <!-- CTA -->
-  <div class="success-cta su-anim su-d5">
-    <a href="/manifiesto" class="cta-outline" id="t-cta1">Leer el manifiesto</a>
-    <a href="https://x.com/koredevice" target="_blank" class="cta-amber" id="t-cta2">Seguir en X →</a>
+  <div class="su-ctas aa d5">
+    <a href="/manifiesto" class="cta-o" id="t-cta1">Leer el manifiesto</a>
+    <a href="https://x.com/koredevice" target="_blank" class="cta-a" id="t-cta2">Seguir en X →</a>
   </div>
 
 </section>
@@ -490,224 +453,149 @@ footer{
 </footer>
 
 <script>
-// ── CURSOR
+// CURSOR
 const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
 (function tick(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cur2.style.left=rx+'px';cur2.style.top=ry+'px';requestAnimationFrame(tick)})();
 
-// ── CONFIG
-const WORKER_URL='https://correos.martinez-summers-gabriel.workers.dev/';
+// CONFIG
+const WORKER='https://correos.martinez-summers-gabriel.workers.dev/';
 let lang='es';
 
-// ── COPY
+// TRANSLATIONS
 const T={
   es:{
-    stat1:'Unidades',stat2:'Años garantizados',stat3:'Datos enviados',
-    title:'Kore',sub:'El smartphone que es tuyo de verdad.',
-    edition:'Edición Fundadores · Lista de espera abierta',
+    s1:'Unidades',s2:'Años garantizados',s3:'Datos enviados',
+    sub:'El smartphone que es tuyo de verdad.',
+    badge:'Edición Fundadores · Lista de espera abierta',
     btn:'Reservar',note:'Sin spam · Sin compromisos · Solo Kore',
-    placeholder:'tu@email.com',mani:'Leer el manifiesto',
-    loading:'Un momento...',
-    errEmail:'Introduce un email válido.',
-    errRecent:'Ya te has apuntado recientemente.',
-    errGeneric:'Algo salió mal. Inténtalo de nuevo.',
-    suDate:()=>{
-      const d=new Date();
-      const days=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-      const months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-      return days[d.getDay()]+', '+d.getDate()+' de '+months[d.getMonth()]+' de '+d.getFullYear();
-    },
-    suEdition:'Edición Fundadores · getkore.es',
-    rbLabel:'Tu número de reserva',
-    suHeadline:'Estás en la lista.',
-    suText1:(n)=>`Gracias por unirte a la Founders Edition de Kore. Eres la persona número <strong>${n}</strong> de un máximo de 1.000.`,
-    suText2:(r)=>`Quedan <span class="amber">${r} plazas disponibles</span>. Cuando se completen, cerraremos la lista para siempre.`,
-    suQuote:'"El smartphone que llevas encima debería ser el objeto más tuyo del mundo. Estamos construyendo exactamente eso."',
-    remaining:(r)=>`Quedan ${r} plazas disponibles`,
-    st1t:'Recibes actualizaciones',st1d:'Te contaremos el avance del proyecto, las especificaciones técnicas y la fecha de pre-order antes que nadie.',
-    st2t:'Pre-order prioritario',st2d:'Los fundadores tienen acceso a pre-order 72h antes de apertura pública. Tu número de reserva determina el orden.',
-    st3t:'Entrega en 2027',st3d:'Las unidades empezarán a enviarse en 2027. Recibirás tu número de serie grabado antes de que llegue el dispositivo.',
+    ph:'tu@email.com',mani:'Leer el manifiesto',scroll:'Descubrir',
+    ld:'Un momento...',
+    eEmail:'Introduce un email válido.',
+    eRecent:'Ya te has apuntado recientemente.',
+    eGeneric:'Algo salió mal. Inténtalo de nuevo.',
+    suEd:'Edición Fundadores · getkore.es',
+    rbLbl:'Tu número de reserva',
+    suH:'Estás en la lista.',
+    sq:'"El smartphone que llevas encima debería ser el objeto más tuyo del mundo. Estamos construyendo exactamente eso."',
+    rem:r=>'Quedan '+r+' plazas disponibles',
+    p1:n=>'Eres la persona número <strong>'+n+'</strong> de un máximo de 1.000 de la Founders Edition de Kore.',
+    p2:r=>'Quedan <span class="am">'+r+' plazas disponibles</span>. Cuando se completen, cerraremos la lista para siempre.',
+    st1:'Recibes actualizaciones',sd1:'Te contaremos el avance del proyecto, las especificaciones técnicas y la fecha de pre-order antes que nadie.',
+    st2:'Pre-order prioritario',sd2:'Los fundadores tienen acceso a pre-order 72h antes de apertura pública. Tu número de reserva determina el orden.',
+    st3:'Entrega en 2027',sd3:'Las unidades empezarán a enviarse en 2027. Recibirás tu número de serie grabado antes de que llegue el dispositivo.',
     sp1:'Material',sp2:'Privacidad',sp2v:'Cero datos enviados',sp3:'Seguridad',sp4:'Precio',
     cta1:'Leer el manifiesto',cta2:'Seguir en X →',
+    date:()=>{const d=new Date();const D=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];const M=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];return D[d.getDay()]+' '+d.getDate()+' '+M[d.getMonth()]+' '+d.getFullYear()}
   },
   en:{
-    stat1:'Units',stat2:'Guaranteed years',stat3:'Data sent',
-    title:'Kore',sub:'The smartphone that is truly yours.',
-    edition:'Founders Edition · Waitlist open',
+    s1:'Units',s2:'Guaranteed years',s3:'Data sent',
+    sub:'The smartphone that is truly yours.',
+    badge:'Founders Edition · Waitlist open',
     btn:'Reserve',note:'No spam · No commitment · Just Kore',
-    placeholder:'you@email.com',mani:'Read the manifesto',
-    loading:'Please wait...',
-    errEmail:'Please enter a valid email.',
-    errRecent:'You signed up recently.',
-    errGeneric:'Something went wrong. Please try again.',
-    suDate:()=>{
-      const d=new Date();
-      const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-      return days[d.getDay()]+', '+months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
-    },
-    suEdition:'Founders Edition · getkore.es',
-    rbLabel:'Your reserve number',
-    suHeadline:"You're on the list.",
-    suText1:(n)=>`Thank you for joining the Kore Founders Edition. You are person number <strong>${n}</strong> out of a maximum of 1,000.`,
-    suText2:(r)=>`<span class="amber">${r} spots remaining</span>. When they're gone, the list closes forever.`,
-    suQuote:'"The smartphone you carry should be the object most truly yours. That\'s exactly what we\'re building."',
-    remaining:(r)=>`${r} spots remaining`,
-    st1t:'You receive updates',st1d:"We'll keep you informed about the project's progress, technical specifications and pre-order date before anyone else.",
-    st2t:'Priority pre-order',st2d:'Founders get access to pre-order 72h before public opening. Your reserve number determines the order.',
-    st3t:'Delivery in 2027',st3d:"Units will start shipping in 2027. You'll receive your engraved serial number before the device arrives.",
+    ph:'you@email.com',mani:'Read the manifesto',scroll:'Discover',
+    ld:'Please wait...',
+    eEmail:'Please enter a valid email.',
+    eRecent:'You signed up recently.',
+    eGeneric:'Something went wrong. Please try again.',
+    suEd:'Founders Edition · getkore.es',
+    rbLbl:'Your reserve number',
+    suH:"You're on the list.",
+    sq:'"The smartphone you carry should be the object most truly yours. That\'s exactly what we\'re building."',
+    rem:r=>r+' spots remaining',
+    p1:n=>'You are person number <strong>'+n+'</strong> out of a maximum of 1,000 in the Kore Founders Edition.',
+    p2:r=>'<span class="am">'+r+' spots remaining</span>. When they are gone, the list closes forever.',
+    st1:'You receive updates',sd1:"We'll keep you informed about the project's progress, technical specs and pre-order date before anyone else.",
+    st2:'Priority pre-order',sd2:'Founders get access to pre-order 72h before public opening. Your reserve number determines the order.',
+    st3:'Delivery in 2027',sd3:"Units will start shipping in 2027. You'll receive your engraved serial number before the device arrives.",
     sp1:'Material',sp2:'Privacy',sp2v:'Zero data sent',sp3:'Security',sp4:'Price',
     cta1:'Read the manifesto',cta2:'Follow on X →',
+    date:()=>{const d=new Date();const D=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return D[d.getDay()]+' '+d.getDate()+' '+M[d.getMonth()]+' '+d.getFullYear()}
   }
 };
 
-function applyLang(){
-  const t=T[lang];
-  document.getElementById('t-stat1').textContent=t.stat1;
-  document.getElementById('t-stat2').textContent=t.stat2;
-  document.getElementById('t-stat3').textContent=t.stat3;
-  document.getElementById('t-title').textContent=t.title;
-  document.getElementById('t-sub').textContent=t.sub;
-  document.getElementById('t-edition').textContent=t.edition;
-  document.getElementById('btn-text').textContent=t.btn;
-  document.getElementById('t-note').textContent=t.note;
-  document.getElementById('email-input').placeholder=t.placeholder;
-  document.getElementById('t-mani').textContent=t.mani;
-  document.getElementById('lang-btn').textContent=lang==='es'?'EN':'ES';
-  document.querySelector('title').textContent=lang==='es'?'Kore — Lista de Espera · Edición Fundadores':'Kore — Waitlist · Founders Edition';
-  // Success screen
-  document.getElementById('t-su-date').textContent=t.suDate();
-  document.getElementById('t-su-edition').textContent=t.suEdition;
-  document.getElementById('t-rb-label').textContent=t.rbLabel;
-  document.getElementById('t-su-headline').textContent=t.suHeadline;
-  document.getElementById('t-su-quote').textContent=t.suQuote;
-  document.getElementById('t-st1-title').textContent=t.st1t;
-  document.getElementById('t-st1-desc').textContent=t.st1d;
-  document.getElementById('t-st2-title').textContent=t.st2t;
-  document.getElementById('t-st2-desc').textContent=t.st2d;
-  document.getElementById('t-st3-title').textContent=t.st3t;
-  document.getElementById('t-st3-desc').textContent=t.st3d;
-  document.getElementById('t-sp1-l').textContent=t.sp1;
-  document.getElementById('t-sp2-l').textContent=t.sp2;
-  document.getElementById('t-sp2-v').textContent=t.sp2v;
-  document.getElementById('t-sp3-l').textContent=t.sp3;
-  document.getElementById('t-sp4-l').textContent=t.sp4;
-  document.getElementById('t-cta1').textContent=t.cta1;
-  document.getElementById('t-cta2').textContent=t.cta2;
+function setLang(l){
+  lang=l;
+  document.getElementById('btn-es').classList.toggle('active',l==='es');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  const t=T[l];
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+  const setH=(id,v)=>{const el=document.getElementById(id);if(el)el.innerHTML=v};
+  set('t-s1',t.s1);set('t-s2',t.s2);set('t-s3',t.s3);
+  set('t-sub',t.sub);set('t-badge',t.badge);
+  document.getElementById('btn-txt').textContent=t.btn;
+  set('t-note',t.note);
+  document.getElementById('email-inp').placeholder=t.ph;
+  document.querySelector('.mani-lnk').childNodes[0].textContent=t.mani+' ';
+  set('t-scroll',t.scroll);
+  set('t-su-ed',t.suEd);set('t-rb-lbl',t.rbLbl);set('t-su-h',t.suH);
+  set('t-sq',t.sq);
+  set('t-st1',t.st1);set('t-sd1',t.sd1);
+  set('t-st2',t.st2);set('t-sd2',t.sd2);
+  set('t-st3',t.st3);set('t-sd3',t.sd3);
+  set('t-sp1',t.sp1);set('t-sp2',t.sp2);set('t-sp2v',t.sp2v);set('t-sp3',t.sp3);set('t-sp4',t.sp4);
+  set('t-cta1',t.cta1);set('t-cta2',t.cta2);
+  document.title=l==='es'?'Kore — Lista de Espera · Edición Fundadores':'Kore — Waitlist · Founders Edition';
 }
 
-function toggleLang(){
-  lang=lang==='es'?'en':'es';
-  applyLang();
-}
-
-// ── SUBMIT
-async function submitForm(){
-  const email=document.getElementById('email-input').value.trim();
-  const btn=document.getElementById('submit-btn');
-  const btnText=document.getElementById('btn-text');
-  const errorEl=document.getElementById('form-error');
+async function doSubmit(){
+  const email=document.getElementById('email-inp').value.trim();
+  const btn=document.getElementById('res-btn');
+  const btxt=document.getElementById('btn-txt');
+  const err=document.getElementById('ferr');
   const t=T[lang];
-
-  if(!email||!email.includes('@')||!email.includes('.')){
-    errorEl.style.display='block';
-    errorEl.textContent=t.errEmail;
-    return;
-  }
-
-  const last=localStorage.getItem('kore-ts');
+  if(!email||!email.includes('@')||!email.includes('.')){err.style.display='block';err.textContent=t.eEmail;return}
+  const last=localStorage.getItem('kore_ts');
   const now=Date.now();
-  if(last&&now-Number(last)<60000){
-    errorEl.style.display='block';
-    errorEl.textContent=t.errRecent;
-    return;
-  }
-
-  btn.classList.add('loading');
-  btnText.textContent=t.loading;
-  errorEl.style.display='none';
-
+  if(last&&now-Number(last)<60000){err.style.display='block';err.textContent=t.eRecent;return}
+  btn.classList.add('ld');btxt.textContent=t.ld;err.style.display='none';
   try{
-    const res=await fetch(WORKER_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email})
-    });
-
+    const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
     const data=await res.json().catch(()=>({}));
-
     if(res.ok&&data.success){
-      localStorage.setItem('kore-ts',now.toString());
-      showSuccess(data.reserveNumber||1, data.remaining||999);
+      localStorage.setItem('kore_ts',now.toString());
+      showSuccess(data.reserveNumber||1,data.remaining||999);
     } else {
-      errorEl.style.display='block';
-      errorEl.textContent=data.error||t.errGeneric;
-      btn.classList.remove('loading');
-      btnText.textContent=t.btn;
+      err.style.display='block';err.textContent=data.error||t.eGeneric;
+      btn.classList.remove('ld');btxt.textContent=t.btn;
     }
-  } catch(err){
-    errorEl.style.display='block';
-    errorEl.textContent=t.errGeneric;
-    btn.classList.remove('loading');
-    btnText.textContent=t.btn;
-    localStorage.setItem('kore-ts','');
+  } catch(e){
+    err.style.display='block';err.textContent=t.eGeneric;
+    btn.classList.remove('ld');btxt.textContent=t.btn;
+    localStorage.setItem('kore_ts','');
   }
 }
 
-// ── SHOW SUCCESS
-function showSuccess(reserveNumber, remaining){
+function showSuccess(n,r){
   const t=T[lang];
-
-  // Update success screen content
-  document.getElementById('su-number').textContent=reserveNumber;
-  document.getElementById('su-remaining').textContent=t.remaining(remaining);
-  document.getElementById('t-su-text1').innerHTML=t.suText1(reserveNumber);
-  document.getElementById('t-su-text2').innerHTML=t.suText2(remaining);
-  document.getElementById('t-su-date').textContent=t.suDate();
-
-  // Animate number counter
-  animateNumber(reserveNumber);
-
-  // Change glow color
-  document.getElementById('glow').style.background=
-    'radial-gradient(ellipse 55% 45% at 50% 40%,rgba(200,169,110,.08),transparent 60%)';
-
-  // Switch screens
-  const ws=document.getElementById('screen-waitlist');
-  const ss=document.getElementById('screen-success');
-  ws.style.opacity='0';
-  ws.style.transform='translateY(-16px)';
-  ws.style.transition='opacity .4s ease, transform .4s ease';
-
-  setTimeout(()=>{
-    ws.style.display='none';
-    ss.style.display='flex';
-    window.scrollTo(0,0);
-  },400);
-}
-
-// ── NUMBER COUNTER ANIMATION
-function animateNumber(target){
-  const el=document.getElementById('su-number');
-  const duration=800;
+  document.getElementById('su-num').textContent=n;
+  document.getElementById('su-rem').textContent=t.rem(r);
+  document.getElementById('su-p1').innerHTML=t.p1(n);
+  document.getElementById('su-p2').innerHTML=t.p2(r);
+  document.getElementById('su-date').textContent=t.date();
+  // Glow change
+  document.getElementById('bg-glow').style.background='radial-gradient(ellipse 55% 45% at 50% 38%,rgba(200,169,110,.09),transparent 62%)';
+  // Animate number
+  const el=document.getElementById('su-num');
   const start=Date.now();
-  const startVal=1;
-
-  function update(){
-    const elapsed=Date.now()-start;
-    const progress=Math.min(elapsed/duration,1);
-    const ease=1-Math.pow(1-progress,3);
-    const current=Math.round(startVal+(target-startVal)*ease);
-    el.textContent=current;
-    if(progress<1)requestAnimationFrame(update);
-    else el.textContent=target;
-  }
-  requestAnimationFrame(update);
+  (function tick(){
+    const p=Math.min((Date.now()-start)/850,1);
+    const e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(1+(n-1)*e);
+    if(p<1)requestAnimationFrame(tick);else el.textContent=n;
+  })();
+  // Transition
+  const hero=document.getElementById('hero');
+  hero.style.transition='opacity .45s ease,transform .45s ease';
+  hero.style.opacity='0';hero.style.transform='translateY(-12px)';
+  setTimeout(()=>{
+    hero.style.display='none';
+    const ss=document.getElementById('s-success');
+    ss.style.display='flex';
+    window.scrollTo({top:0,behavior:'instant'});
+  },450);
 }
-
-// ── INIT
-applyLang();
 </script>
 </body>
 </html>
